@@ -1,0 +1,5 @@
+LinkedListにはどのようなコンストラクタを追加すべきか
+回答：
+Object型で最初のObjectを設定できるコンストラクタ
+Listを受けてLinkedListへ変換するコンストラクタ
+LinkedListとObjectの要素を持ち既存のLinkedListにObjectをnextの要素として持つコンストラクタ
