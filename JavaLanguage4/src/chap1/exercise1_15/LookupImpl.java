@@ -24,7 +24,7 @@ public class LookupImpl implements ExtendedLookup {
 			updateValue(name, value);
 		} else if (names.length > size) {
 			names[size] = name;
-			values[size] = values;
+			values[size] = value;
 			size++;
 		} else {
 			names = Arrays.copyOf(names, names.length + 1);
@@ -38,16 +38,17 @@ public class LookupImpl implements ExtendedLookup {
 	@Override
 	public Object remove(String name) {
 		Object removedValue = null;
-		for (int i = 0; i < names.length; i++) {
+		for (int i = 0; i < size; i++) {
 			if (names[i].equals(name)) {
 				removedValue = values[i];
 				int numMoved = names.length - i - 1;
-				if (numMoved > 0) {
+				if (numMoved >= 0) {
 					System.arraycopy(names, i+1, names, i,numMoved);
 		        	System.arraycopy(values, i+1, values, i,numMoved);
 		        	names[--size] = null;
 			        values[size] = null;
 				}
+				break;
 			}
 		}
 		return removedValue;
@@ -61,20 +62,5 @@ public class LookupImpl implements ExtendedLookup {
 			}
 		}
 	}
-
-//	public static void main(String[] args) {
-//
-//		LookupImpl look = new LookupImpl();
-//		look.add("test", new String("test"));
-//		look.add("test2", new String("test2"));
-//		look.add("test3", new String("test3"));
-//		look.add("test2", new String("test2sub"));
-//		System.out.println( (String)look.find("test2"));
-//		look.remove("test3");
-//		System.out.println((String)look.find("test3"));
-//		look.add("test4", new String("test4"));
-//		look.add("test5", new String("test5"));
-//		System.out.println((String)look.find("test5"));
-//	}
 
 }

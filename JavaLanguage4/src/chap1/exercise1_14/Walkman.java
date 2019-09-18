@@ -31,10 +31,6 @@ public class Walkman {
 		}
 	}
 
-	/**
-	 *
-	 * @param tape
-	 */
 	public void setTape(Object tape) {
 		this.tape = tape;
 	}
