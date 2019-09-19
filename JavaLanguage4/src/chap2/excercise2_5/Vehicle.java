@@ -2,7 +2,7 @@ package chap2.excercise2_5;
 
 public class Vehicle {
 
-	public static long nextSerialNo = 1;
+	private static long nextSerialNo = 1;
 	private final long id;
 	private double speed = 0;
 	private double direction = 0;
@@ -36,6 +36,10 @@ public class Vehicle {
 
 	public String getOwner() {
 		return owner;
+	}
+
+	public void setOwner(String owner) {
+		this.owner = owner;
 	}
 
 	public long getId() {

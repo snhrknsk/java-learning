@@ -24,7 +24,7 @@ public class LinkedList {
 
 	private LinkedList getLast() {
 		LinkedList list = this;
-		while(this.next != null){
+		while(list.next != null){
 			list = list.next;
 		}
 		return list;

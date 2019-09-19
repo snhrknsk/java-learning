@@ -1,7 +1,7 @@
 package chap2.excercise2_15;
 
 public class Vehicle {
-	public static long nextSerialNo = 1;
+	private static long nextSerialNo = 1;
 	private final long id;//変更不可能,一意に決めるものだから
 	private double speed = 0;//変更可能,スピードは変わるから
 	private double direction = 0;//変更可能,方向は変わるため
