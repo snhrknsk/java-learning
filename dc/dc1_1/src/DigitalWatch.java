@@ -22,7 +22,7 @@ public class DigitalWatch extends Frame {
 	private final int UPDATE_INTERVAL = 1000;
 
 	public static void main(String[] args) {
-		Frame window = new DegitalWatch();
+		Frame window = new DigitalWatch();
 		window.setVisible(true);
 	}
 
