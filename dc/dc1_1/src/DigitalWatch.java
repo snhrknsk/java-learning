@@ -15,7 +15,7 @@ import java.util.TimerTask;
 /**
  * デジタル時計を表示するクラス
  */
-public class DegitalWatch extends Frame {
+public class DigitalWatch extends Frame {
 
 	private Calendar time = Calendar.getInstance(Locale.JAPAN);
 	private final Format FORMAT = new SimpleDateFormat("HH:mm:ss");
@@ -26,11 +26,11 @@ public class DegitalWatch extends Frame {
 		window.setVisible(true);
 	}
 
-    public DegitalWatch() {
+    public DigitalWatch() {
     	super("時計");
 		setSize(240, 100);
 		setFont(new Font("Dialog",Font.BOLD,34));
-		addWindowListener(new MyWindowAdapter());
+		addWindowListener(new WatchWindowAdapter());
 		setResizable(false);
     }
 
@@ -59,13 +59,16 @@ public class DegitalWatch extends Frame {
 			repaint();
 		}
     }
-}
 
-/**
- * Windowの×ボタン対応
- */
-class MyWindowAdapter extends WindowAdapter {
-    public void windowClosing(WindowEvent e) {
-       System.exit(0);
+    /**
+     * Windowの×ボタン対応
+     */
+    private static class WatchWindowAdapter extends WindowAdapter {
+        public void windowClosing(WindowEvent e) {
+           System.exit(0);
+        }
     }
 }
+
+
+
