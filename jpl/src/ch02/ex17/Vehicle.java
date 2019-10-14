@@ -1,11 +1,8 @@
-package chap2.excercise2_18;
-
-import java.util.ArrayList;
-import java.util.List;
-
+package ch02.ex17;
 
 public class Vehicle {
-	public static long nextSerialNo = 1;
+
+	private static long nextSerialNo = 1;
 	private final long id;
 	private double speed = 0;
 	private double direction = 0;
@@ -82,13 +79,4 @@ public class Vehicle {
 		return nextSerialNo - 1;
 	}
 
-	public static void main(String[] args) {
-		List<Vehicle> vehicleList = new ArrayList<>();
-		for (String owner : args) {
-			vehicleList.add(new Vehicle(owner));
-		}
-		for (Vehicle vehicle : vehicleList) {
-			System.out.println(vehicle.toString());
-		}
-	}
 }

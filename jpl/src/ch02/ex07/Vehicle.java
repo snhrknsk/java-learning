@@ -1,4 +1,4 @@
-package chap2.excercise2_7;
+package ch02.ex07;
 
 public class Vehicle {
 	private static long nextSerialNo = 1;

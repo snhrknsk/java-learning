@@ -1,15 +1,11 @@
-package chap2.excercise2_17;
+package ch02.ex15;
 
 public class Vehicle {
-
 	private static long nextSerialNo = 1;
-	private final long id;
-	private double speed = 0;
-	private double direction = 0;
-	private String owner = "";
-
-	public static final String TURN_LEFT = "left";
-	public static final String TURN_RIGHT = "right";
+	private final long id;//変更不可能,一意に決めるものだから
+	private double speed = 0;//変更可能,スピードは変わるから
+	private double direction = 0;//変更可能,方向は変わるため
+	private String owner = "";//変更可能,持ち主は変わるため
 
 	public Vehicle() {
 		id = nextSerialNo;
@@ -53,23 +49,6 @@ public class Vehicle {
 		return id;
 	}
 
-	public void turn(double turn) {
-		direction += turn;
-	}
-
-	public void turn(String turn) {
-		switch (turn) {
-		case TURN_LEFT:
-			direction -= 90;
-			break;
-		case TURN_RIGHT:
-			direction += 90;
-			break;
-		default:
-			throw new IllegalArgumentException("must be TURN_LEFT or TURN_RIGHT");
-		}
-	}
-
 	@Override
 	public String toString() {
 		return "ID:" + id + ", Owner:" + owner + ", Speed:" + speed + "km/h, Direction:" + direction +"°";
@@ -78,5 +57,4 @@ public class Vehicle {
 	public static long getLastSerialNumber() {
 		return nextSerialNo - 1;
 	}
-
 }

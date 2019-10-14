@@ -1,7 +1,6 @@
-package chap2.excercise2_2;
+package ch02.ex11;
 
 public class LinkedList {
-
 	private Object element = null;
 	private LinkedList next = null;
 
@@ -33,4 +32,15 @@ public class LinkedList {
 	private void setNext(Object obj) {
 		next = new LinkedList(obj);
 	}
+
+	@Override
+	public String toString() {
+		LinkedList list = this;
+		StringBuilder sb = new StringBuilder("[" + list.getElement());
+		while((list = list.getNext()) != null) {
+			sb.append("," + list.getElement());
+		}
+		return sb.append("]").toString();
+	}
+
 }

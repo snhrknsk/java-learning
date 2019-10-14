@@ -1,4 +1,4 @@
-package chap2.excercise2_16;
+package ch02.ex16;
 
 public class LinkedList {
 	private Object element = null;//変更可,要素は変わってもよい

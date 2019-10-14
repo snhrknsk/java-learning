@@ -1,14 +1,19 @@
-package chap2.excercise2_1;
+package ch02.ex10;
 
 public class Vehicle {
+	private static long nextSerialNo = 1;
+	private final long id;
 	private double speed = 0;
 	private double direction = 0;
 	private String owner = "";
 
 	public Vehicle() {
+		id = nextSerialNo;
+		nextSerialNo++;
 	}
 
 	public Vehicle(String owner) {
+		this();
 		this.owner = owner;
 	}
 
@@ -36,4 +41,16 @@ public class Vehicle {
 		this.owner = owner;
 	}
 
+	public long getId() {
+		return id;
+	}
+
+	@Override
+	public String toString() {
+		return "ID:" + id + ", Owner:" + owner + ", Speed:" + speed + "km/h, Direction:" + direction +"°";
+	}
+
+	public static long getLastSerialNumber() {
+		return nextSerialNo - 1;
+	}
 }

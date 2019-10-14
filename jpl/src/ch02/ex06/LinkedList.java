@@ -1,6 +1,6 @@
-package chap2.excercise2_6;
+package ch02.ex06;
 
-import chap2.excercise2_5.Vehicle;
+import ch02.ex05.Vehicle;
 
 public class LinkedList {
 	private Object element = null;

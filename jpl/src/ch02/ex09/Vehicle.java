@@ -1,11 +1,11 @@
-package chap2.excercise2_13;
+package ch02.ex09;
 
 public class Vehicle {
 	private static long nextSerialNo = 1;
-	private final long id;//変更不可能,一意に決めるものだから
-	private double speed = 0;//変更可能,スピードは変わるから
-	private double direction = 0;//変更可能,方向は変わるため
-	private String owner = "";//変更可能,持ち主は変わるため
+	private final long id;
+	private double speed = 0;
+	private double direction = 0;
+	private String owner = "";
 
 	public Vehicle() {
 		id = nextSerialNo;
@@ -37,17 +37,12 @@ public class Vehicle {
 		return owner;
 	}
 
-	public void setOwner(String newOwner) {
-		owner = newOwner;
+	public void setOwner(String owner) {
+		this.owner = owner;
 	}
 
 	public long getId() {
 		return id;
-	}
-
-	@Override
-	public String toString() {
-		return "ID:" + id + ", Owner:" + owner + ", Speed:" + speed + "km/h, Direction:" + direction +"°";
 	}
 
 	public static long getLastSerialNumber() {
