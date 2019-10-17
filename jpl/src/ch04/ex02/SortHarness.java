@@ -4,45 +4,53 @@ import java.util.Comparator;
 
 import ch03.ex11.SortMetrics;
 
+/**
+ * 分かりませんでした
+ */
 public class SortHarness implements ISortHarness {
 
-	private Object[] values;
-	private final SortMetrics curMetrics = new SortMetrics();
-	private Comparator<Object> comparator;
+	@Override
+	public SortMetrics sort(Object[] data, Comparator<Object> comparator) {
 
-	public final SortMetrics sort(Object[] data, Comparator<Object> comparator) {
-		values = data;
-		this.comparator = comparator;
-		curMetrics.init();
-		doSort();
-		return getMetrics();
+		return null;
 	}
 
-	public final SortMetrics getMetrics() {
-		return curMetrics.clone();
+	@Override
+	public SortMetrics getMetrics() {
+
+		return null;
 	}
 
-	protected final int getDataLength() {
-		return values.length;
+	@Override
+	public int getDataLength() {
+
+		return 0;
 	}
 
-	protected final Object probe(int i) {
-		curMetrics.probeCnt++;
-		return values[i];
+	@Override
+	public Object probe(int i) {
+
+		return null;
 	}
 
-	protected final int compare(int i, int j) {
-		curMetrics.compareCnt++;
-		return comparator.compare(values[i], values[j]);
+	@Override
+	public int compare(int i, int j) {
+
+		return 0;
 	}
 
-	protected final void swap(int i, int j) {
-		curMetrics.swapCnt++;
-		Object tmp = values[i];
-		values[i] = values[j];
-		values[j] = tmp;
+	@Override
+	public void swap(int i, int j) {
+
+
 	}
 
-	protected abstract void doSort();
+	@Override
+	public void doSort() {
+
+
+	}
+
+
 
 }
