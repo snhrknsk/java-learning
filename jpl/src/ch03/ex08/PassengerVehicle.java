@@ -5,12 +5,12 @@ import java.util.List;
 
 public class PassengerVehicle extends Vehicle implements Cloneable {
 
-	private final int seatNum;//seat数は変更されないためfinal
+	private final int seatNum;
 	private int usingSeatNum = 0;
 
-	PassengerVehicle() {
+	PassengerVehicle(int seatNum) {
 		super();
-		seatNum = 5;
+		this.seatNum = seatNum;
 	}
 
 	PassengerVehicle(String owner, int seatNum){
@@ -52,6 +52,9 @@ public class PassengerVehicle extends Vehicle implements Cloneable {
 		}
 	}
 
+	/**
+	 * cloneによる単純なコピーだとIDが重複してしまう
+	 */
 	@Override
 	public PassengerVehicle clone() {
 		PassengerVehicle copyVehicle = new PassengerVehicle(getOwner(), seatNum);

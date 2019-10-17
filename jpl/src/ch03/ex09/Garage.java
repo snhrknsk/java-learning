@@ -10,10 +10,12 @@ public class Garage implements Cloneable{
 		size = 0;
 	}
 
-	public void addVehicle(Vehicle vehicle) {
+	public boolean addVehicle(Vehicle vehicle) {
 		if (garage.length > size) {
-			garage[++size] = vehicle;
+			garage[size++] = vehicle;
+			return true;
 		}
+		return false;
 	}
 
 	public Vehicle getVehicle(int index) {

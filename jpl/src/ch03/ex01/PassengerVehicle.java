@@ -8,6 +8,11 @@ public class PassengerVehicle extends Vehicle {
 	private int seatNum = 0;
 	private int usingSeatNum = 0;
 
+	PassengerVehicle(int seatNum) {
+		super();
+		this.seatNum = seatNum;
+	}
+
 	PassengerVehicle(String owner, int seatNum){
 		super(owner);
 		this.seatNum = seatNum;

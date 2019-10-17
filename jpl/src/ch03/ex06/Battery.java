@@ -25,17 +25,17 @@ public class Battery extends EnergySource {
 			batteryAmount += addAmount;
 		}
 
-		public void consumeBattery(int consumeAmount) {
-			if (batteryAmount - consumeAmount < 0) {
-				batteryAmount = 0;
-				return;
-			}
-			batteryAmount -= consumeAmount;
+	public void consumeBattery(int consumeAmount) {
+		if (batteryAmount - consumeAmount < 0) {
+			batteryAmount = 0;
+			return;
 		}
+		batteryAmount -= consumeAmount;
+	}
 
-		public int getBattery() {
-			return batteryAmount;
-		}
+	public int getBattery() {
+		return batteryAmount;
+	}
 
 
 

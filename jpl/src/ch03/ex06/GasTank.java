@@ -33,7 +33,7 @@ public class GasTank extends EnergySource{
 		gasAmount -= consumeAmount;
 	}
 
-	public int getGass() {
+	public int getGas() {
 		return gasAmount;
 	}
 }
