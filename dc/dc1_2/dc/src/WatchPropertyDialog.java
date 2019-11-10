@@ -153,9 +153,9 @@ public class WatchPropertyDialog extends Dialog {
 		int maxFontSize = 10;
 		Format FORMAT = new SimpleDateFormat("HH:mm:ss");
 		String timeStr = FORMAT.format(Calendar.getInstance(Locale.JAPAN).getTime());
-		FontMetrics fontMetrics = getFontMetrics(font);
+		FontMetrics fontMetrics;
 		for (int i = 10;; i+=1) {
-			fontMetrics = getFontMetrics(new Font(currentStrFont.getFontName(),Font.BOLD,i));
+			fontMetrics = getFontMetrics(new Font(font.getFontName(),Font.BOLD,i));
 			if (fontMetrics.stringWidth(timeStr) > max.width - 100) {
 				break;
 			}
