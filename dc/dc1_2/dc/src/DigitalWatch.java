@@ -74,7 +74,7 @@ public class DigitalWatch extends Frame implements ActionListener {
 		ct = buf.getGraphics();
 		ct.setColor(strColor);
 		ct.setFont(timerFont);
-		ct.drawString(timeStr, 50,fontMetrics.getAscent() + 65 - fontMetrics.getDescent());
+		ct.drawString(timeStr, 50,fontMetrics.getAscent() + 75 - fontMetrics.getDescent());
 
 		//フォントサイズに合わせてWindowをリサイズ
     	setSize(fontMetrics.stringWidth(timeStr) + 100, fontMetrics.getAscent() + 100 );
