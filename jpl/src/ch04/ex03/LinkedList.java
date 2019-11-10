@@ -3,8 +3,8 @@ package ch04.ex03;
 
 public class LinkedList implements ILinkedList {
 
-	private Object element = null;//変更可,要素は変わってもよい
-	private LinkedList next = null;//変更可,リンクは張り替えてよい
+	private Object element = null;
+	private LinkedList next = null;
 
 	public LinkedList(Object element) {
 		this.element = element;

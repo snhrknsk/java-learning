@@ -30,4 +30,9 @@ public class Attr {
 	public String toString() {
 		return name + "='" + value + "'";
 	}
+
+	public static void main(String...strings) {
+		"a".equals("test");
+	}
+
 }
