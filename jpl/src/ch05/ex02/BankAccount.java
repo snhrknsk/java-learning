@@ -20,8 +20,7 @@ public class BankAccount {
 		}
 
 		public String toString() {
-			// identify our enclosing account
-			return number + ": " + act + " " + amount;
+			return number + ":" + act + " " + amount;
 		}
 	}
 
@@ -78,6 +77,5 @@ public class BankAccount {
 	public long getBalance() {
 		return balance;
 	}
-	// ...
 
 }

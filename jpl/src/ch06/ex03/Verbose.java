@@ -6,7 +6,7 @@ public enum Verbose {
 	NORMAL(2),
 	VERBOSE(3),;
 
-	int verbosity;
+	private int verbosity;
 	Verbose(int verbosity) {
 		this.verbosity = verbosity;
 	}

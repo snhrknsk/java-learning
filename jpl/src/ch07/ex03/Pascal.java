@@ -2,7 +2,7 @@ package ch07.ex03;
 
 public class Pascal {
 
-	public static void calcPascal(int row) {
+	static int[][] calcPascal(int row) {
 		int[][] result = new int[row][];
 		result[0] = new int[1];
 		result[0][0] = 1;
@@ -18,10 +18,11 @@ public class Pascal {
 				}
 			}
 		}
-		displayPascal(result);
+		return result;
 	}
 
-	private static void displayPascal(int[][] pascal) {
+	static void displayPascal(int row) {
+		int[][] pascal = calcPascal(row);
 		for (int[] array : pascal) {
 			for (int result : array) {
 				System.out.printf("%4d,", result);
@@ -31,6 +32,6 @@ public class Pascal {
 	}
 
 	public static void main(String[]args) {
-		Pascal.calcPascal(12);
+		Pascal.displayPascal(12);
 	}
 }
