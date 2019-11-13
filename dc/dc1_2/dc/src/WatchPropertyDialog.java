@@ -18,11 +18,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.text.Format;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.HashSet;
-import java.util.Locale;
 import java.util.Set;
 
 import dc.src.DigitalWatch.MenuItems;
@@ -47,7 +43,6 @@ public class WatchPropertyDialog extends Dialog {
 	private TextField bFontValue;
 	private Choice fontChoice;
 	private TextField fontSizeField;
-	private int maxFontSize;
 
 	public WatchPropertyDialog(DigitalWatch digitalWatch) {
 		super(digitalWatch, MenuItems.Property.name(), true);
@@ -115,8 +110,6 @@ public class WatchPropertyDialog extends Dialog {
         fontSizePanel.add(fontSize);
         fontSizeField = new TextField(String.valueOf(currentStrFont.getSize()), 20);
         fontSizePanel.add(fontSizeField);
-//        Label maxSizeLabel = new Label("最大:" + String.valueOf(maxFontSize + "pt"));
-//        fontSizePanel.add(maxSizeLabel);
         add(fontSizePanel);
 
         //FontColor
@@ -146,22 +139,6 @@ public class WatchPropertyDialog extends Dialog {
         add(buttonPanel);
 
         setVisible(true);
-	}
-
-	private int cariculateMaxFontSize(Font font) {
-		Dimension max = getToolkit().getScreenSize();
-		int maxFontSize = 10;
-		Format FORMAT = new SimpleDateFormat("HH:mm:ss");
-		String timeStr = FORMAT.format(Calendar.getInstance(Locale.JAPAN).getTime());
-		FontMetrics fontMetrics;
-		for (int i = 10;; i+=1) {
-			fontMetrics = getFontMetrics(new Font(font.getFontName(),Font.BOLD,i));
-			if (fontMetrics.stringWidth(timeStr) > max.width - 100) {
-				break;
-			}
-			maxFontSize = i;
-		}
-		return maxFontSize;
 	}
 
 	private void createFontChoice(Choice choice) {
@@ -202,12 +179,21 @@ public class WatchPropertyDialog extends Dialog {
 		}
     }
 
+	/**
+	 * RGBが0~255に収まっているかチェック<br>
+	 * 収まっていない場合元々の色を利用
+	 * @param r
+	 * @param g
+	 * @param b
+	 * @param defaultColor
+	 * @return
+	 */
 	private Color validateColorValue(String r, String g, String b, Color defaultColor) {
 		try {
 			int intR = Integer.parseInt(r);
 			int intG = Integer.parseInt(g);
 			int intB = Integer.parseInt(b);
-			if (intR >= 0 && intG >= 0 && intB >= 0 && intR < 256 && intG <= 256 && intB <256) {
+			if (intR >= 0 && intG >= 0 && intB >= 0 && intR < 256 && intG < 256 && intB < 256) {
 				return new Color(intR, intG, intB);
 			}
 		}catch (NumberFormatException e) {
@@ -215,6 +201,13 @@ public class WatchPropertyDialog extends Dialog {
 		return defaultColor;
 	}
 
+	/**
+	 * フォントサイズが最大ウィンドウサイズを超えていないかのチェック<br>
+	 * 超えていたら最大値へ変更,-の場合は1へ変更
+	 * @param fontSize
+	 * @param font
+	 * @return 最大フォントサイズ
+	 */
 	private int validateFontSize(String fontSize, Font font) {
 		try {
 			int size = Integer.parseInt(fontSize);
@@ -229,6 +222,36 @@ public class WatchPropertyDialog extends Dialog {
 		}catch (NumberFormatException e) {
 		}
 		return currentStrFont.getSize();
+	}
+
+	private int cariculateMaxFontSize(Font font) {
+		Dimension max = getToolkit().getScreenSize();
+		int maxFontSize = 10;
+		FontMetrics fontMetrics;
+		for (int i = 10;; i+=1) {
+			fontMetrics = getFontMetrics(new Font(font.getFontName(),Font.BOLD,i));
+			if (maxNumWidth(fontMetrics) > max.width) {
+				break;
+			}
+			maxFontSize = i;
+		}
+		return maxFontSize;
+	}
+
+	private int maxNumWidth(FontMetrics fontMetrics) {
+		char[] num = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+		int max = 0;
+		for (char c : num) {
+			int width = fontMetrics.charWidth(c);
+			if (max < width) {
+				max = width;
+			}
+		}
+		int width = max * 8 + fontMetrics.charWidth(':') * 2;
+		if (width < 150) {
+			return 150;
+		}
+		return width;
 	}
 
 }

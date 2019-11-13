@@ -10,6 +10,7 @@ import java.awt.Image;
 import java.awt.Menu;
 import java.awt.MenuBar;
 import java.awt.MenuItem;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -29,29 +30,33 @@ public class DigitalWatch extends Frame implements ActionListener {
 	private Dimension dim;
 	private Color backColor = Color.gray;
 	private Color strColor = Color.black;
-	private Font timerFont = new Font("Dialog",Font.BOLD,34);
+	private Font timerFont = new Font("Dialog",Font.BOLD,50);
 	protected final static Font MENU_FONT = new Font("Dialog",Font.PLAIN,12);
+	private int fontLocationX = 0;
+	private int fontLocationY = 0;
 	public enum MenuItems{Property,};
 	int count = 0;
 
 	public static void main(String[] args) {
 		DigitalWatch window = new DigitalWatch();
-		window.init();
+
 		window.setVisible(true);
-//		window.setLocationRelativeTo(null);
 		window.setResizable(false);
 		window.execUpdate();
 	}
 
 	public void init() {
 		this.setMenuBar(createMenue());
-		dim = getSize();
+		dim = new Dimension();
+		setMaxScreenDimension(timerFont);
 		buf = createImage(dim.width , dim.height);
+		setFontLocation();
 	}
 
     public DigitalWatch() {
     	super("時計");
-		setSize(240, 140);
+		init();
+		setSize((int)dim.getWidth(), dim.height);
 		setFont(timerFont);
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -65,19 +70,14 @@ public class DigitalWatch extends Frame implements ActionListener {
      * 時刻を表示し、時刻を更新する
      */
     @Override
-    public synchronized void paint(Graphics g) {
+    public void paint(Graphics g) {
 
-    	FontMetrics fontMetrics;
 		String timeStr = FORMAT.format(time.getTime());
-		fontMetrics = this.getFontMetrics(timerFont);
-		buf = createImage(fontMetrics.stringWidth(timeStr)+100, fontMetrics.getAscent()+100);
+		buf = createImage((int)dim.getWidth(), dim.height);
 		ct = buf.getGraphics();
 		ct.setColor(strColor);
 		ct.setFont(timerFont);
-		ct.drawString(timeStr, 50,fontMetrics.getAscent() + 75 - fontMetrics.getDescent());
-
-		//フォントサイズに合わせてWindowをリサイズ
-    	setSize(fontMetrics.stringWidth(timeStr) + 100, fontMetrics.getAscent() + 100 );
+		ct.drawString(timeStr, fontLocationX,fontLocationY);
     	setBackground(backColor);
     	g.drawImage(buf, 0, 0, this);
     }
@@ -93,6 +93,7 @@ public class DigitalWatch extends Frame implements ActionListener {
         	try {
 				Thread.sleep(UPDATE_INTERVAL );
 			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
     	}
     }
@@ -115,7 +116,6 @@ public class DigitalWatch extends Frame implements ActionListener {
      */
     public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand() == MenuItems.Property.name()) {
-			System.out.println("menu");
 			new WatchPropertyDialog(this);
 		}
 	}
@@ -124,8 +124,61 @@ public class DigitalWatch extends Frame implements ActionListener {
 		this.backColor = backColor;
 		this.strColor = strColor;
 		this.timerFont = font;
+		setMaxScreenDimension(font);
+		setSize((int)dim.getWidth(), dim.height);
+		setFontLocation();
 		repaint();
 	}
+
+    private void setMaxScreenDimension(Font font) {
+    	FontMetrics fontMetrics;
+		fontMetrics = this.getFontMetrics(timerFont);
+		dim.setSize(maxNumWidth(fontMetrics), validateMaxHeight(fontMetrics));
+    }
+
+    /**
+     * フォントからHH:MM:SSの最大文字列長を求める
+     * @param fontMetrics
+     * @return
+     */
+    private int maxNumWidth(FontMetrics fontMetrics) {
+		char[] num = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+		int max = 0;
+		for (char c : num) {
+			int width = fontMetrics.charWidth(c);
+			if (max < width) {
+				max = width;
+			}
+		}
+		int width = max * 8 + fontMetrics.charWidth(':') * 2;
+		if (width < 150) {
+			return 150;
+		}
+		return width;
+	}
+
+    /**
+     * 最小サイズは縦130とする
+     * @param fontMetrics
+     * @return
+     */
+    private int validateMaxHeight(FontMetrics fontMetrics) {
+    	if (fontMetrics.getHeight() * 1.5 < 130) {
+			return 130;
+		}
+    	return (int) (fontMetrics.getHeight() * 1.5);
+    }
+
+    /**
+     * 文字列の横幅とスクリーンサイズから文字列配置位置を計算し画面中央に文字を置く
+     */
+    private void setFontLocation() {
+    	String timeStr = FORMAT.format(time.getTime());
+		FontMetrics fm = this.getFontMetrics(timerFont);
+		Rectangle rectText = fm.getStringBounds(timeStr, ct).getBounds();
+		fontLocationX=(int) ((dim.getWidth() - rectText.width)/2);
+		fontLocationY=(int) (( dim.height -rectText.height)/2 + fm.getMaxAscent() + 20);
+    }
 
     public Color getBackColor() {
 		return backColor;
