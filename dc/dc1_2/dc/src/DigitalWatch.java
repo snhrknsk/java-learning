@@ -73,14 +73,21 @@ public class DigitalWatch extends Frame implements ActionListener {
     public void paint(Graphics g) {
 
 		String timeStr = FORMAT.format(time.getTime());
-		buf = createImage((int)dim.getWidth(), dim.height);
+
+		buf = createImage(dim.width, dim.height);
 		ct = buf.getGraphics();
+		ct.setColor(backColor);
+		ct.fillRect(0 , 0 , dim.width , dim.height);
 		ct.setColor(strColor);
 		ct.setFont(timerFont);
 		ct.drawString(timeStr, fontLocationX,fontLocationY);
-    	setBackground(backColor);
+
     	g.drawImage(buf, 0, 0, this);
     }
+
+    public void update(Graphics g) {
+		paint(g);
+	}
 
 	/**
      * 定期的に時計を更新する<br>
@@ -91,7 +98,7 @@ public class DigitalWatch extends Frame implements ActionListener {
         	time = Calendar.getInstance(Locale.JAPAN);
         	repaint();
         	try {
-				Thread.sleep(UPDATE_INTERVAL );
+				Thread.sleep( UPDATE_INTERVAL );
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

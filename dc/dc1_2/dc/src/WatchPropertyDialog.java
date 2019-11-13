@@ -65,7 +65,7 @@ public class WatchPropertyDialog extends Dialog {
 	 * ダイアログの各コンポーネントを作成する
 	 */
 	private void initDialog() {
-        setSize(360 , 190);
+        setSize(350 , 190);
         setLocation(didigitalWatch.getLocation());
         setResizable(false);
         setFont(CONTENT_FONT);
@@ -91,27 +91,6 @@ public class WatchPropertyDialog extends Dialog {
         backColorPanel.add(bBackValue);
         add(backColorPanel);
 
-        //Font
-        Panel fontPanel = new Panel(new FlowLayout(FlowLayout.LEFT));
-        Label fontLabel = new Label("フォント 　:");
-        fontLabel.setFont(CONTENT_FONT_BOLD);
-        fontPanel.add(fontLabel);
-        fontChoice = new Choice();
-        createFontChoice(fontChoice);
-        fontChoice.setSize(new Dimension(10, 50));
-        fontPanel.add(fontChoice);
-        add(fontPanel);
-        //TODO:fontChoice.getSelectedItem();
-
-        //Font size
-        Panel fontSizePanel = new Panel(FLOW_LAYOUT);
-        Label fontSize = new Label("文字サイズ :");
-        fontSize.setFont(CONTENT_FONT_BOLD);
-        fontSizePanel.add(fontSize);
-        fontSizeField = new TextField(String.valueOf(currentStrFont.getSize()), 20);
-        fontSizePanel.add(fontSizeField);
-        add(fontSizePanel);
-
         //FontColor
         Panel colorFontPanel = new Panel(new FlowLayout(FlowLayout.LEFT));
         Label fontColor = new Label("文字色　　 :");
@@ -132,6 +111,28 @@ public class WatchPropertyDialog extends Dialog {
         colorFontPanel.add(bFontValue);
         add(colorFontPanel);
 
+        //Font size
+        Panel fontSizePanel = new Panel(FLOW_LAYOUT);
+        Label fontSize = new Label("文字サイズ :");
+        fontSize.setFont(CONTENT_FONT_BOLD);
+        fontSizePanel.add(fontSize);
+        fontSizeField = new TextField(String.valueOf(currentStrFont.getSize()), 29);
+        fontSizePanel.add(fontSizeField);
+        add(fontSizePanel);
+
+        //Font
+        Panel fontPanel = new Panel(new FlowLayout(FlowLayout.LEFT));
+        Label fontLabel = new Label("フォント 　:");
+        fontLabel.setFont(CONTENT_FONT_BOLD);
+        fontPanel.add(fontLabel);
+        fontChoice = new Choice();
+        createFontChoice(fontChoice);
+        fontChoice.setPreferredSize(new Dimension(230, 8));
+        fontChoice.setFont(CONTENT_FONT);
+
+        fontPanel.add(fontChoice);
+        add(fontPanel);
+
         //OK Button
         Panel buttonPanel = new Panel(new FlowLayout(FlowLayout.RIGHT));
         FontButton button = new FontButton();
@@ -146,6 +147,7 @@ public class WatchPropertyDialog extends Dialog {
 		Font[] fonts = ge.getAllFonts();
 		choice.addItem(currentStrFont.getFontName());
 		Set<String> fontSet = new HashSet<>();
+		fontSet.add(currentStrFont.getFontName());
 		for (Font font : fonts) {
 			if (!fontSet.contains(font.getFontName())) {
 				choice.addItem(font.getFontName());
