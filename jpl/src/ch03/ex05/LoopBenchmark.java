@@ -14,5 +14,4 @@ public class LoopBenchmark extends Benchmark {
 	}
 
 
-
 }

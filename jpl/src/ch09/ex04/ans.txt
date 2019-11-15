@@ -1,0 +1,11 @@
+1	6 int
+2	11 long
+3	false bool
+4	false bool
+5	13.5e-1 float
+6	Nan double
+7	Nan double
+8	true bool
+9	-1 int
+10	   long
+11	×　正しくない

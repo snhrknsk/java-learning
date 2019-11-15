@@ -2,12 +2,12 @@ package ch03.ex02;
 
 public class X {
 
-	private int dispValue = show();
+	private int dispValue = showX();
 	protected int xMask = 0x00ff;
 	protected int fullMask;
 
 	public X() {
-		System.out.printf("X initialize:\t fullMask %4x, yMask %4x%n",fullMask,xMask);
+		System.out.printf("X initialize:\t fullMask %4x, xMask %4x%n",fullMask,xMask);
 		fullMask = xMask;
 		System.out.printf("X constractor:\t fullMask %4x, xMask %4x%n",fullMask,xMask);
 	}
@@ -15,7 +15,7 @@ public class X {
 		return (orig & fullMask);
 	}
 
-	public int show() {
+	public int showX() {
 		System.out.printf("X def value:\t fullMask %4x, yMask %4x%n",fullMask,xMask);
 		return 0;
 	}
