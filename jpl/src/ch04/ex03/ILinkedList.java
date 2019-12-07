@@ -6,4 +6,5 @@ public interface ILinkedList {
 	public LinkedList getNext();
 	public void add(Object obj);
 	public int size();
+
 }
