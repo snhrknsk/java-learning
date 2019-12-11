@@ -46,7 +46,8 @@ public class DigitalWatch extends Window implements ActionListener{
 	private  Point startDrag, startPos;
 	int count = 0;
 	enum MenuSet{
-		Exit, Font, Dialog, 游ゴシック, メイリオ, 明朝体,
+		Exit,
+		Font, Dialog, 游ゴシック, メイリオ, 明朝体,
 		FontSize, Small, Medium, Large,
 		FontColor, FWhite, FBlack, FGray, FRed, FBlue, FGreen,
 		BackColor, BWhite, BBlack, BGray, BRed, BBlue, BGreen;
@@ -215,8 +216,6 @@ public class DigitalWatch extends Window implements ActionListener{
     	itemBackGreen.addActionListener(watch);
     	backColorMenu.add(itemBackGreen);
     	pop.add(backColorMenu);
-
-
     	pop.addSeparator();
     	//Exit
     	MenuItem itemExit = new MenuItem(MenuSet.Exit.name());
