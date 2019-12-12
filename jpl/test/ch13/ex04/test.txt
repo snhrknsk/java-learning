@@ -1,0 +1,8 @@
+Boolean true
+Character a
+Short 1
+Integer 2
+Double 1.1
+Float 1.1
+Byte 1
+Ignore true

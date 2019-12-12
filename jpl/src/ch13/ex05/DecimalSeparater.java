@@ -13,7 +13,4 @@ public class DecimalSeparater {
 		return stringBuilder.toString();
 	}
 
-	public static void main(String...strings) {
-		System.out.println(DecimalSeparater.separate("1234567890"));
-	}
 }

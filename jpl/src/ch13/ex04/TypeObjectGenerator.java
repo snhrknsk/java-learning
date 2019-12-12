@@ -16,13 +16,16 @@ public class TypeObjectGenerator {
 		this.file = new File(filePath);
 	}
 
-	public void create() {
+	/**
+	 * ファイルの１行に記載のあるオブジェクトを生成しオブジェクトのリストを作成する<br>
+	 * 記載方法が"type value"の形式になっていない、もしくはtypeの型に合わないvalueが記載されている場合は無視される
+	 */
+	public List<Object> create() {
 		try (BufferedReader reader = new BufferedReader(new FileReader(file));) {
 			String line;
 			while((line = reader.readLine()) != null) {
 				String[] strs = line.split("\\s");
 				if (strs.length != 2) {
-					System.err.println("Invalid line:" + line);
 					continue;
 				}
 				switch(strs[0]) {
@@ -51,17 +54,14 @@ public class TypeObjectGenerator {
 					list.add(new Double(strs[1]));
 					break;
 				default:
-					System.err.println("Invalid line:" + line);
 					break;
 				}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-	public List<Object> getList() {
 		return list;
 	}
+
 
 }

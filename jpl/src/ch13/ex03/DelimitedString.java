@@ -5,7 +5,9 @@ import java.util.List;
 
 public class DelimitedString {
 
-	public String[] delimitedString(String from, char start, char end) {
+	private static final String[] EMPTY_STRING_ARRAY = new String[0];
+
+	public static String[] delimitedString(String from, char start, char end) {
 		int startPosition = 0;
 		int endPosition = 0;
 		List<String> delimitedList = new ArrayList<>();
@@ -20,13 +22,13 @@ public class DelimitedString {
 		}
 
 		if (delimitedList.isEmpty()) {
-			return null;
+			return EMPTY_STRING_ARRAY;
 		}
 		return delimitedList.toArray(new String[delimitedList.size()]);
 	}
 
 	public static void main(String...strings ) {
-		String[] s = new DelimitedString().delimitedString("abcaabcabbn", 'a', 'c');
+		String[] s = DelimitedString.delimitedString("abcaabcabbn", 'a', 'c');
 		for (String string : s) {
 			System.out.println(string);
 		}
