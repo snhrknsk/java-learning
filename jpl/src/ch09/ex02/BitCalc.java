@@ -3,7 +3,7 @@ package ch09.ex02;
 
 public class BitCalc {
 
-	int mask = 1;
+	private int mask = 1;
 
 	public int bitCount(int x) {
 		int count = 0;
@@ -16,10 +16,6 @@ public class BitCalc {
 		}
 
 		return count;
-	}
-	public static void main(String[] args) {
-
-		System.out.println(new BitCalc().bitCount(12));
 	}
 
 }

@@ -27,12 +27,12 @@ public interface Attributed<E> {
 			return name;
 		}
 
-		public Object getValue() {
+		public E getValue() {
 			return value;
 		}
 
-		public Object setValue(E newValue) {
-			Object oldVal = value;
+		public E setValue(E newValue) {
+			E oldVal = value;
 			value = newValue;
 			return oldVal;
 		}

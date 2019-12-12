@@ -19,7 +19,7 @@ public class WorkDay {
 		return true;
 	}
 
-	public static boolean isWeekSwitch(Week week) {
+	public static boolean isWorkDaySwitch(Week week) {
 		switch (week) {
 		case SUNDAY:
 		case SATURDAY:

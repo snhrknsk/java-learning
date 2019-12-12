@@ -25,7 +25,7 @@ public class LinkedList {
 			}
 			targetElement = targetElement.next;
 		}
-		throw new ObjectNotFoundException();
+		throw new ObjectNotFoundException(element);
 	}
 
 	public void add(Object obj) {

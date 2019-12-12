@@ -30,6 +30,6 @@ public class ConvertString {
 	}
 
 	public static void main(String...strings) {
-		System.out.println(new ConvertString().convert("aa\n\r\\b\t\""));
+		System.out.println(new ConvertString().convert("\n\t\b\"\'\\\f\r"));
 	}
 }
