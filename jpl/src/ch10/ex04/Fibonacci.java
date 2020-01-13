@@ -23,7 +23,7 @@ public class Fibonacci {
 
 		i=0;
 		while(i<result.length) {
-			System.out.println(i);
+			System.out.println(result[i]);
 			i++;
 		}
 	}

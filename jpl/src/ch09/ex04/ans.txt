@@ -5,9 +5,9 @@
 13.5e-1 % Float.POSITIVE_INFINITY					13.5e-1 float
 Float.POSITIVE_INFINITY + Double.NEGATIVE_INFINITY	Nan		double
 Double.POSITIVE_INFINITY - Float.NEGATIVE_INFINITY	Nan		double
-0.0 / -0.0 == -0.0 / 0.0							true 	bool
+0.0 / -0.0 == -0.0 / 0.0							false 	bool
 Integer.MAX_VALUE + Integer.MIN_VALUE				-1 		int
 Long.MAX_VALUE + 5									Long.MIN_VALUE + 4	long
 (short) 5 * (byte) 10								50		int
-(i < 15 ? 1.72e3f : 0)								iが15以下 1.72e3f 15　より大きい 0
+(i < 15 ? 1.72e3f : 0)								iが15以下 1.72e3f 15　より大きい 0 //片方がFloatの場合Floatへ
 i++ + i++ + --i (i=3)								11		int

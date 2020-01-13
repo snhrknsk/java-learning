@@ -14,7 +14,6 @@ public class BitCalc {
 			}
 			x >>=1;
 		}
-
 		return count;
 	}
 
