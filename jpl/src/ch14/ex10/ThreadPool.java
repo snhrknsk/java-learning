@@ -4,7 +4,7 @@
  */
 package ch14.ex10;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
@@ -29,14 +29,12 @@ import java.util.Objects;
  */
 public class ThreadPool {
 
-	private int queueSize;
-	private int numberOfthread;
-	private int usedThreadCount = 0;
+	private int maxQueueSize;
 	private boolean isStarted = false;
-	private List<Runnable> taskQueue = new ArrayList<>();
-	private Object poolLock = new Object();
-	private QueueManager queueManager = new QueueManager();
-	private int count = 0;
+	private boolean isThreadStarted = false;
+	private boolean isShutdown = false;
+	private List<Runnable> requestQueue = new LinkedList<>();
+	private final Worker[] threadPool;
 
 	/**
      * Constructs ThreadPool.
@@ -51,8 +49,8 @@ public class ThreadPool {
         if (queueSize <= 0 || numberOfThreads <= 0) {
 			throw new IllegalArgumentException();
 		}
-        this.queueSize = queueSize;
-        this.numberOfthread = numberOfThreads;
+        this.maxQueueSize = queueSize;
+        threadPool = new Worker[numberOfThreads];
     }
 
     /**
@@ -65,7 +63,9 @@ public class ThreadPool {
 			throw new IllegalStateException();
 		}
         isStarted = true;
-        queueManager.start();
+        for (int i = 0; i < threadPool.length; i++) {
+			threadPool[i] = new Worker(this, "thread-" + i);
+		}
     }
 
     /**
@@ -75,15 +75,29 @@ public class ThreadPool {
      *
      * @throws IllegalStateException if threads has not been started.
      */
-    public void stop() {
+    public synchronized void stop() {
         if (!isStarted) {
 			throw new IllegalStateException();
 		}
-        queueManager.signalEnd();
-//        try {
-//			Thread.sleep(1000);
-//		} catch (InterruptedException e) {
-//		}
+
+        if (isShutdown) {
+			throw new IllegalStateException();
+		}
+        isShutdown = true;
+
+        for (int i = 0; i < threadPool.length; i++) {
+			threadPool[i].signalStop();
+		}
+
+        for (int i = 0; i < threadPool.length; i++) {
+			try {
+		        notifyAllThread();
+				threadPool[i].join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+        System.out.println("End All Thread");
     }
 
     /**
@@ -101,85 +115,81 @@ public class ThreadPool {
         	throw new IllegalStateException();
 		}
         Objects.requireNonNull(runnable);
-        queueManager.signalPutQueue(runnable);
+        if (!isThreadStarted) {
+			for (int i = 0; i < threadPool.length; i++) {
+				threadPool[i].start();
+			}
+			isThreadStarted = true;
+		}
+        while (maxQueueSize <= requestQueue.size()) {
+			try {
+				wait();
+			} catch (InterruptedException e) {
+			}
+		}
+		requestQueue.add(runnable);
+		notifyAll();
     }
 
-    private class QueueManager extends Thread{
+    public synchronized Runnable takeTask() {
+//		while (requestQueue.size() <= 0) {
+//			try {
+//				System.out.println("wait queue");
+//				wait();
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			}
+//			System.out.println("end wait queue");
+//		}
+		if (requestQueue.size() == 0 || requestQueue.get(0) == null) {
+			return null;
+		}
+		notifyAll();
+		return requestQueue.remove(0);
+	}
 
-    	private boolean isEnd = false;
+    public synchronized void notifyAllThread() {
+		for (int i = 0; i < threadPool.length; i++) {
+			threadPool[i].signalNotify();;
+		}
+	}
+
+
+    private static class Worker extends Thread{
+
+		private ThreadPool threadPool;
+		private boolean isWork = true;
+
+		public Worker(ThreadPool threadPool, String name) {
+//			super(name);
+			this.threadPool = threadPool;
+		}
 
 		@Override
-		public void run() {
-			while(!isEnd) {
-				System.out.println("manager run " + usedThreadCount +" " + numberOfthread + " " + isEnd);
-				waitQueue();
-				if (usedThreadCount < numberOfthread && !isEnd) {
-					executeQueueRunnable();
-					count++;
-				}
-				System.out.println(count);
-			}
-
-		}
-
-		private synchronized void waitQueue() {
-			try {
-				wait(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-
-		private synchronized void executeQueueRunnable() {
-			if (taskQueue.size() > 0) {
-				Thread t = new Thread(new Worker(taskQueue.get(0),this));
-				t.start();
-				usedThreadCount++;
-			}
-		}
-
-		public synchronized void signalPutQueue(Runnable task) {
-			while(true) {
-				if (taskQueue.size() < queueSize) {
-					taskQueue.add(task);
-					break;
+		public synchronized void run() {
+			System.out.println("Start work");
+			Runnable task;
+			while(isWork) {
+				task = threadPool.takeTask();
+				if (task != null) {
+					task.run();
 				}
 				try {
-					Thread.sleep(100);
+					wait();
 				} catch (InterruptedException e) {
+					e.printStackTrace();
 				}
 			}
+			System.out.println("End worker : " + Thread.currentThread().getName());
+		}
+
+		public synchronized void signalStop() {
+			isWork = false;
+		}
+
+		public synchronized void signalNotify() {
 			notifyAll();
 		}
 
-		public synchronized void signalEndWorker() {
-			usedThreadCount--;
-			notifyAll();
-		}
-
-		public synchronized void signalEnd() {
-			isEnd = true;
-			notifyAll();
-		}
-
-		private class Worker implements Runnable{
-
-			private Runnable task;
-			private QueueManager manager;
-
-			public Worker(Runnable task, QueueManager manager) {
-				this.task = task;
-				this.manager = manager;
-			}
-
-			@Override
-			public void run() {
-				System.out.println("run task");
-				task.run();
-				manager.signalEndWorker();
-			}
-
-		}
-
-    }
+	}
 }
