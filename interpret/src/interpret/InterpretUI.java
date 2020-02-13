@@ -162,22 +162,8 @@ public class InterpretUI extends JFrame implements ActionListener {
 				}
 			    return true;
 			  }
-//			@Override
-//			  public void setValueAt(Object val, int rowIndex, int columnIndex) {
-//			    data[rowIndex][columnIndex] = val;
-//			    fireTableCellUpdated(rowIndex, columnIndex);
-//			  }
 		};
-//		tableModel.addTableModelListener(new TableModelListener() {
-//
-//			@Override
-//			public void tableChanged(TableModelEvent e) {
-//				if (e.getType() == TableModelEvent.UPDATE) {
-//					System.out.println(tableModel.getValueAt(e.getFirstRow(), e.getColumn()));
-////					tableModel.setValueAt(tableModel.getValueAt(e.getFirstRow(), e.getColumn()), e.getFirstRow(), e.getColumn());
-//				}
-//			}
-//		});
+
 		parameterTable = new JTable(tableModel);
 		parameterTable.setRowHeight(18);
 
@@ -214,7 +200,6 @@ public class InterpretUI extends JFrame implements ActionListener {
 	}
 
 	private void selectConstructor(int index) {
-		System.out.println(index);
 		tableModel.setRowCount(0);
 		List<String> params = objectManager.getConstructorParam(index);
 		for (int i = 0; i < params.size(); i++) {
@@ -227,7 +212,6 @@ public class InterpretUI extends JFrame implements ActionListener {
 		String command = e.getActionCommand();
 
 		if (command.equals(ActionItem.ClassButton.name())) {
-			System.out.println("search class");
 			try {
 				Class<?> target = Interpret.searchClass(classField.getText());
 				objectManager = new ObjectManager(target);
@@ -236,7 +220,6 @@ public class InterpretUI extends JFrame implements ActionListener {
 				ExceptionDialog.createExceptionDialog(this, e1);
 			}
 		} else if (command.equals(ActionItem.CreateButton.name())) {//instance作成
-			System.out.println("create instance");
 			if (tableModel.getRowCount() > 0) {
 				parameterTable.getCellEditor().stopCellEditing();//ボックス内の変更を確定
 			}

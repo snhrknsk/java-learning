@@ -187,7 +187,6 @@ public class InterpretArrayUI extends JFrame implements ActionListener{
 		String command = e.getActionCommand();
 
 		if (command.equals(ActionItem.ClassButton.name())) {
-			System.out.println("search class");
 			Class<?> target;
 			try {
 				if (TypeUtil.isPrimitive(classField.getText())) {
@@ -201,7 +200,6 @@ public class InterpretArrayUI extends JFrame implements ActionListener{
 				ExceptionDialog.createExceptionDialog(this, e1);
 			}
 		} else if (command.equals(ActionItem.CreateButton.name())) {//instance作成
-			System.out.println("create instance");
 			if (tableModel.getRowCount() > 0) {
 				if (parameterTable.getCellEditor() != null) {
 					parameterTable.getCellEditor().stopCellEditing();//ボックス内の変更を確定

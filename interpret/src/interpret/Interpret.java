@@ -31,21 +31,6 @@ public class Interpret {
 		return searchedClazz;
 	}
 
-//	public static Class<?> searchArray(String className) throws ClassNotFoundException {
-//
-//		Class<?> arrayClazz;
-//		//まずPrimitive型を探す
-//		if (TypeUtil.isPrimitive(className)) {
-//
-//		} else {
-//			//Primitiveじゃない場合クラスを探す
-//			Class<?> searchedClazz = searchClass(className);
-//			arrayClazz =
-//		}
-//
-//		return arrayClazz;
-//	}
-
 	public static <T> T createObj(Constructor<T> constructor, Object... args) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		if (args == null) {
 			return constructor.newInstance();

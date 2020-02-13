@@ -158,7 +158,6 @@ public class HomeUI extends JFrame implements ActionListener{
 	}
 
 	public void addObject(ObjectManager object) {
-		System.out.println("created object & insert table : " + object);
 		String instanceName = Interpret.trimPackage(object.getTargetClass().toString()).replace("class ", "") + "#" + InstanceManager.getClassIndex();
 		tableModel.addRow(new String[] {instanceName, object.getTargetClassName()});
 		InstanceManager.getInstance().addInstance(instanceName, object);
@@ -169,7 +168,6 @@ public class HomeUI extends JFrame implements ActionListener{
 		String command = e.getActionCommand();
 
 		if (command.equals(Action.Create.name())) {
-			System.out.println("create");
 			if (instance.isSelected()) {
 				new InterpretUI(this);
 			} else if (array.isSelected()) {
@@ -177,13 +175,12 @@ public class HomeUI extends JFrame implements ActionListener{
 			}
 
 		} else if (command.equals(Action.Edit.name())) {
-			System.out.println("edit");
 			if (instanceList.getSelectedRow() == -1) {
-				ExceptionDialog.createExceptionDialog(this, "Select table you want to edit.");
+				ExceptionDialog.createExceptionDialog(this, "Select instance you want to edit.");
 				return;
 			}
 			String instanceName = tableModel.getValueAt(instanceList.getSelectedRow(), 0).toString();
-			new InterpretInstanceUI(InstanceManager.getInstance().getCreatedObject(instanceName));
+			new InterpretInstanceUI(InstanceManager.getInstance().getCreatedObject(instanceName), instanceName);
 		}
 	}
 
