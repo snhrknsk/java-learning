@@ -10,4 +10,8 @@ public class ExceptionDialog{
 		e.printStackTrace();
 	}
 
+	public static void createExceptionDialog(JFrame owner, String message) {
+		JOptionPane.showMessageDialog(owner, message);
+	}
+
 }

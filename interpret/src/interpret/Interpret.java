@@ -1,5 +1,6 @@
 package interpret;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
@@ -30,11 +31,30 @@ public class Interpret {
 		return searchedClazz;
 	}
 
+//	public static Class<?> searchArray(String className) throws ClassNotFoundException {
+//
+//		Class<?> arrayClazz;
+//		//まずPrimitive型を探す
+//		if (TypeUtil.isPrimitive(className)) {
+//
+//		} else {
+//			//Primitiveじゃない場合クラスを探す
+//			Class<?> searchedClazz = searchClass(className);
+//			arrayClazz =
+//		}
+//
+//		return arrayClazz;
+//	}
+
 	public static <T> T createObj(Constructor<T> constructor, Object... args) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		if (args == null) {
 			return constructor.newInstance();
 		}
 		return constructor.newInstance(args);
+	}
+
+	public static <T> Object createArray(Class<?> clazz, int num) {
+		return Array.newInstance( clazz, num);
 	}
 
 	public static String trimPackage(String target) {

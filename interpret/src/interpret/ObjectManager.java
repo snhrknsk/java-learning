@@ -1,5 +1,6 @@
 package interpret;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ public class ObjectManager {
 	private Constructor<?>[] constructors;
 	private Parameter[] params;
 	private Object createdObject;
+	private String className;
 
 	public ObjectManager(Class<?> clazz) {
 		this.clazz = clazz;
@@ -22,6 +24,10 @@ public class ObjectManager {
 
 	public Class<?> getTargetClass() {
 		return clazz;
+	}
+
+	public String getTargetClassName() {
+		return className;
 	}
 
 	/**
@@ -65,9 +71,24 @@ public class ObjectManager {
 		}
 		for (int i = 0; i < paramList.size(); i++) {
 			System.out.println(params[i].getType());
-			paramArray[i] = TypeConverter.convertType(paramList.get(i), params[i].getType().toString());
+			paramArray[i] = TypeUtil.convertType(paramList.get(i), params[i].getType().toString());
 		}
+		className = Interpret.trimPackage(clazz.toString());
 		createdObject = Interpret.createObj(target, paramArray);
+	}
+
+	/**
+	 * 配列のオブジェクトを作成する
+	 * @param paramList
+	 * @throws Exception
+	 */
+	public void createObject(Object arrayNum, List<String> paramList) throws Exception {
+//		Object[] paramArray = new Object[paramList.size()];
+		className = Interpret.trimPackage(clazz.toString()) + "[" + arrayNum + "]";
+		createdObject = Interpret.createArray(clazz, (int)arrayNum);
+		for (int i = 0; i < paramList.size(); i++) {
+			Array.set(createdObject, i, TypeUtil.convertType(paramList.get(i), clazz.toString()));
+		}
 	}
 
 	public Object getCreatedObject() {
