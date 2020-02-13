@@ -9,7 +9,7 @@ public class LinkedList<E> {
 		this.element = element;
 	}
 
-	public Object getElement() {
+	public E getElement() {
 		return element;
 	}
 

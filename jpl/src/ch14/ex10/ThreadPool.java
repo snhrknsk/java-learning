@@ -4,6 +4,7 @@
  */
 package ch14.ex10;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -33,7 +34,7 @@ public class ThreadPool {
 	private boolean isStarted = false;
 	private boolean isThreadStarted = false;
 	private boolean isShutdown = false;
-	private List<Runnable> requestQueue = new LinkedList<>();
+	private List<Runnable> requestQueue = Collections.synchronizedList(new LinkedList<>());
 	private final Worker[] threadPool;
 
 	/**
@@ -85,6 +86,8 @@ public class ThreadPool {
 		}
         isShutdown = true;
 
+        //タスクがすべて終わるまでwait, takeTaskからnotifyでrequestが空であれば終了
+
         for (int i = 0; i < threadPool.length; i++) {
 			threadPool[i].signalStop();
 		}
@@ -128,24 +131,25 @@ public class ThreadPool {
 			}
 		}
 		requestQueue.add(runnable);
-		notifyAll();
+		notifyWaitingWorker();
     }
 
     public synchronized Runnable takeTask() {
-//		while (requestQueue.size() <= 0) {
-//			try {
-//				System.out.println("wait queue");
-//				wait();
-//			} catch (InterruptedException e) {
-//				e.printStackTrace();
-//			}
-//			System.out.println("end wait queue");
-//		}
+
 		if (requestQueue.size() == 0 || requestQueue.get(0) == null) {
 			return null;
 		}
 		notifyAll();
 		return requestQueue.remove(0);
+	}
+
+    public void notifyWaitingWorker() {
+		for (int i = 0; i < threadPool.length; i++) {
+			if (threadPool[i].getState() == Thread.State.WAITING) {
+				threadPool[i].signalNotify();;
+				break;
+			}
+		}
 	}
 
     public synchronized void notifyAllThread() {
@@ -184,6 +188,7 @@ public class ThreadPool {
 		}
 
 		public synchronized void signalStop() {
+			System.out.println("End worker notify " + Thread.currentThread().getName());
 			isWork = false;
 		}
 

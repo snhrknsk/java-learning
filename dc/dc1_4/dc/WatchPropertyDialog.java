@@ -86,7 +86,7 @@ public class WatchPropertyDialog extends Dialog {
         // Layout
  		GridBagLayout layout = new GridBagLayout();
  		setLayout(layout);
- 		setSize(300, 180);
+ 		setSize(400, 180);
  		setResizable(false);
  		GridBagConstraints constraints = new GridBagConstraints();
  		constraints.weighty = 0.1;

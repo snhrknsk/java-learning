@@ -6,8 +6,10 @@ package ch14.ex10;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.junit.Test;
@@ -30,7 +32,6 @@ public class ThreadPoolTest {
 
         @Override
         public synchronized void run() {
-        	System.out.println("run");
             runCount++;
             notifyAll();
         }
@@ -38,9 +39,7 @@ public class ThreadPoolTest {
         synchronized int waitForRunCount(int count) {
             while (this.runCount < count) {
                 try {
-                	System.out.println("wait");
                     wait();
-                    System.out.println("end wait");
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -106,10 +105,10 @@ public class ThreadPoolTest {
         return activeCount;
     }
 
-//    @Test(expected = IllegalArgumentException.class)
-//    public void testConstructorIllegalArgumentFirst() {
-//        new ThreadPool(0, 1);
-//    }
+    @Test(expected = IllegalArgumentException.class)
+    public void testConstructorIllegalArgumentFirst() {
+        new ThreadPool(0, 1);
+    }
 
     @Test(expected = IllegalArgumentException.class)
     public void testConstructorIllegalArgumentSecond() {
@@ -306,43 +305,43 @@ public class ThreadPoolTest {
         assertEquals(1, activeThreadCount());
     }
 
-//    @Test
-//    public void testComplexRepeatedDispatch() {
-//        ThreadPool tp = new ThreadPool(10, 10);
-//        tp.start();
-//        CounterTask t = new CounterTask();
-//
-//        for (int i = 0; i < 1000; i++) {
-//            tp.dispatch(t);
-//        }
-//
-//        t.waitForRunCount(1000);
-//        tp.stop();
-//        assertEquals(1, activeThreadCount());
-//    }
+    @Test
+    public void testComplexRepeatedDispatch() {
+        ThreadPool tp = new ThreadPool(10, 10);
+        tp.start();
+        CounterTask t = new CounterTask();
 
-//    @Test
-//    public void testComplexRepeatedDispatch2() {
-//        ThreadPool tp = new ThreadPool(10, 10);
-//        tp.start();
-//        CounterTask[] tasks = new CounterTask[10];
-//        for (int i = 0; i < tasks.length; i++) {
-//            tasks[i] = new CounterTask();
-//        }
-//
-//        for (int i = 0; i < 100; i++) {
-//            for (CounterTask t : tasks) {
-//                tp.dispatch(t);
-//            }
-//        }
-//
-//        for (CounterTask t : tasks) {
-//            t.waitForRunCount(100);
-//        }
-//
-//        tp.stop();
-//        assertEquals(1, activeThreadCount());
-//    }
+        for (int i = 0; i < 1000; i++) {
+            tp.dispatch(t);
+        }
+
+        t.waitForRunCount(1000);
+        tp.stop();
+        assertEquals(1, activeThreadCount());
+    }
+
+    @Test
+    public void testComplexRepeatedDispatch2() {
+        ThreadPool tp = new ThreadPool(10, 10);
+        tp.start();
+        CounterTask[] tasks = new CounterTask[10];
+        for (int i = 0; i < tasks.length; i++) {
+            tasks[i] = new CounterTask();
+        }
+
+        for (int i = 0; i < 100; i++) {
+            for (CounterTask t : tasks) {
+                tp.dispatch(t);
+            }
+        }
+
+        for (CounterTask t : tasks) {
+            t.waitForRunCount(100);
+        }
+
+        tp.stop();
+        assertEquals(1, activeThreadCount());
+    }
 
     @Test
     public void testLatchSimpleDispatch() {
@@ -372,30 +371,30 @@ public class ThreadPoolTest {
         assertEquals(1, activeThreadCount());
     }
 
-//    @Test
-//    public void testLatchComplexDispatch() {
-//        final int numberOfThreads = 10;
-//        ThreadPool tp = new ThreadPool(10, numberOfThreads);
-//        tp.start();
-//
-//        LatchTask[] tasks = new LatchTask[10];
-//        for (int i = 0; i < tasks.length; i++) {
-//            tasks[i] = new LatchTask(numberOfThreads);
-//        }
-//
-//        for (LatchTask t : tasks) {
-//            for (int i = 0; i < numberOfThreads; i++) {
-//                tp.dispatch(t);
-//            }
-//        }
-//
-//        for (LatchTask t : tasks) {
-//            t.waitForLatchCount();
-//        }
-//
-//        tp.stop();
-//        assertEquals(1, activeThreadCount());
-//    }
+    @Test
+    public void testLatchComplexDispatch() {
+        final int numberOfThreads = 10;
+        ThreadPool tp = new ThreadPool(10, numberOfThreads);
+        tp.start();
+
+        LatchTask[] tasks = new LatchTask[10];
+        for (int i = 0; i < tasks.length; i++) {
+            tasks[i] = new LatchTask(numberOfThreads);
+        }
+
+        for (LatchTask t : tasks) {
+            for (int i = 0; i < numberOfThreads; i++) {
+                tp.dispatch(t);
+            }
+        }
+
+        for (LatchTask t : tasks) {
+            t.waitForLatchCount();
+        }
+
+        tp.stop();
+        assertEquals(1, activeThreadCount());
+    }
 
     @Test
     public void testNumberOfThreads() {
@@ -403,7 +402,6 @@ public class ThreadPoolTest {
         Runnable task = new Runnable() {
             @Override
             public void run() {
-            	System.out.println("Start test : " +Thread.currentThread().getName());
                 threads.add(Thread.currentThread());
                 try {
                     Thread.sleep(500); // wait for a while
@@ -430,41 +428,41 @@ public class ThreadPoolTest {
         assertEquals(1, activeThreadCount());
     }
 
-//    @Test
-//    public void testTerminationOfThreads() {
-//        final List<Thread> threads = Collections.synchronizedList(new ArrayList<Thread>());
-//
-//        Runnable task = new Runnable() {
-//            @Override
-//            public void run() {
-//                threads.add(Thread.currentThread());
-//                try {
-//                    Thread.sleep(1000); // wait for a while
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                    // Oops! Interrupt never be used to stop the thread pool!
-//                    // Because the interrupt might be used by the application for
-//                    // other purposes. Let's shutdown the system to fail this test.
-//                    System.exit(1);
-//                }
-//            }
-//        };
-//
-//        final int numberOfThreads = 10;
-//        ThreadPool tp = new ThreadPool(10, numberOfThreads);
-//        tp.start();
-//        for (int i = 0; i < numberOfThreads; i++) {
-//            tp.dispatch(task);
-//        }
-//        // By the specification, stop() will wait for the terminations of all threads.
-//        tp.stop();
-//
-//        assertEquals(numberOfThreads, threads.size());
-//        for (Thread t : threads) {
-//            assertFalse(t.isAlive());
-//        }
-//        assertEquals(1, activeThreadCount());
-//    }
+    @Test
+    public void testTerminationOfThreads() {
+        final List<Thread> threads = Collections.synchronizedList(new ArrayList<Thread>());
+
+        Runnable task = new Runnable() {
+            @Override
+            public void run() {
+                threads.add(Thread.currentThread());
+                try {
+                    Thread.sleep(1000); // wait for a while
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    // Oops! Interrupt never be used to stop the thread pool!
+                    // Because the interrupt might be used by the application for
+                    // other purposes. Let's shutdown the system to fail this test.
+                    System.exit(1);
+                }
+            }
+        };
+
+        final int numberOfThreads = 10;
+        ThreadPool tp = new ThreadPool(10, numberOfThreads);
+        tp.start();
+        for (int i = 0; i < numberOfThreads; i++) {
+            tp.dispatch(task);
+        }
+        // By the specification, stop() will wait for the terminations of all threads.
+        tp.stop();
+
+        assertEquals(numberOfThreads, threads.size());
+        for (Thread t : threads) {
+            assertFalse(t.isAlive());
+        }
+        assertEquals(1, activeThreadCount());
+    }
 
     @Test
     public void testAllThreadsShouldWait() {
@@ -488,7 +486,6 @@ public class ThreadPoolTest {
         // Now all threads except this current thread should not be RUNNABLE.
         int runnable = 0;
         for (int i = 0; i < 100000; i++) {
-        	System.out.println("test wait " +runnable + " " + i );
             for (Thread t : threads) {
                 if (t == null || t == current) {
                     continue;
