@@ -16,6 +16,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+/**
+ * 起動画面
+ *
+ */
 public class HomeUI extends JFrame implements ActionListener{
 
 	private enum Action{

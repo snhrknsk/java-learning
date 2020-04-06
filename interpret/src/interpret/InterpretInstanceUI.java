@@ -9,6 +9,9 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -19,7 +22,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
-
+/**
+ * インスタンスの表示編集
+ */
 public class InterpretInstanceUI extends JFrame implements ActionListener{
 
 	private ObjectManager targetObjectManager;
@@ -28,6 +33,9 @@ public class InterpretInstanceUI extends JFrame implements ActionListener{
 	private JTable parameterTable;
 	private JTable objectParameterTable;
 	private JComboBox<String> methodList;
+	private Field[] memList;
+	private Method[] methods;
+	private Object targetObject;
 
 	private enum Action{
 		ExcecMethod,
@@ -36,6 +44,7 @@ public class InterpretInstanceUI extends JFrame implements ActionListener{
 
 	public InterpretInstanceUI(ObjectManager target, String instanceName) {
 		this.targetObjectManager = target;
+		this.targetObject = targetObjectManager.getCreatedObject();
 		setTitle(instanceName);
 		initialize();
 		setVisible(true);
@@ -50,6 +59,17 @@ public class InterpretInstanceUI extends JFrame implements ActionListener{
 	        	dispose();
 	        }
 		});
+
+		String[] columnNames = {"Arg No.", "TYPE", "VALUE"};
+
+		paramTableModel = new DefaultTableModel(columnNames, 0) {
+			@Override public boolean isCellEditable(int row, int column) {
+				if (column == 0 || column == 1) {
+					return false;
+				}
+			    return true;
+			  }
+		};
 
 		JPanel panel = new JPanel();
 		GridBagLayout gbLayout = new GridBagLayout();
@@ -107,17 +127,6 @@ public class InterpretInstanceUI extends JFrame implements ActionListener{
 	    JLabel paramLabel = new JLabel("Parameter : ");
 		gbLayout.setConstraints(paramLabel, gbc);
 		panel.add(paramLabel);
-
-		String[] columnNames = {"Arg No.", "TYPE", "VALUE"};
-
-		paramTableModel = new DefaultTableModel(columnNames, 0) {
-			@Override public boolean isCellEditable(int row, int column) {
-				if (column == 0 || column == 1) {
-					return false;
-				}
-			    return true;
-			  }
-		};
 
 		parameterTable = new JTable(paramTableModel);
 		parameterTable.setRowHeight(18);
@@ -187,6 +196,7 @@ public class InterpretInstanceUI extends JFrame implements ActionListener{
 	    JScrollPane scrollPanel2 = new JScrollPane(objectParameterTable);
 		gbLayout.setConstraints(scrollPanel2, gbc);
 		panel.add(scrollPanel2);
+		createFields();
 
 		//変更ボタン
 		gbc.fill = GridBagConstraints.BOTH;
@@ -204,14 +214,37 @@ public class InterpretInstanceUI extends JFrame implements ActionListener{
 		panel.add(changeButton);
 
 		this.getContentPane().add(panel);
+
 	}
 
 	private void createMethodList() {
-		methodList.addItem("未実装");
+
+		methods = targetObjectManager.getTargetClass().getDeclaredMethods();
+		for (Method method : methods) {
+			methodList.addItem(Interpret.trimPackage(method.getName()));
+		}
+
 	}
 
 	private void selectmethod(int selectedIndex) {
+		paramTableModel.setRowCount(0);
+		Parameter[] params = methods[selectedIndex].getParameters();
+		for (int i = 0; i < params.length; i++) {
+			paramTableModel.addRow(new String[] {((Integer)i).toString(), Interpret.trimPackage(params[i].getType().getName()),"" });
+		}
+	}
 
+	private void createFields() {
+		memList = targetObjectManager.getTargetClass().getDeclaredFields();
+		//TODO: sort
+		for (Field member : memList) {
+			try {
+				member.setAccessible(true);
+				objectParamTableModel.addRow(new String[] {Interpret.trimPackage(member.getName()), Interpret.trimPackage(member.getDeclaringClass().toString()), member.get(targetObject).toString()});
+			} catch (IllegalArgumentException | IllegalAccessException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	@Override

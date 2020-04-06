@@ -21,7 +21,9 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.table.DefaultTableModel;
 
-
+/**
+ * 配列作成UI
+ */
 public class InterpretArrayUI extends JFrame implements ActionListener{
 
 	private JTextField classField;
