@@ -220,7 +220,7 @@ public class InterpretUI extends JFrame implements ActionListener {
 				MessageDialog.createExceptionDialog(this, e1);
 			}
 		} else if (command.equals(ActionItem.CreateButton.name())) {//instance作成
-			if (tableModel.getRowCount() > 0) {
+			if (tableModel.getRowCount() > 0 && parameterTable.getCellEditor() != null) {
 				parameterTable.getCellEditor().stopCellEditing();//ボックス内の変更を確定
 			}
 			try {

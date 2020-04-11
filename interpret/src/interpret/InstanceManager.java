@@ -1,6 +1,7 @@
 package interpret;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -37,5 +38,17 @@ public class InstanceManager {
 		return null;
 	}
 
+	public String getClassName(Object target) {
+		String instanceName = target.toString();
+		for (Iterator<String> i = instanceMap.keySet ().iterator(); i.hasNext (); ) {
+			String key = i.next ();
+			ObjectManager value = instanceMap.get (key);
+			if (target == value.getCreatedObject()) {
+				instanceName = key;
+				break;
+			}
+		}
+		return instanceName;
+	}
 
 }

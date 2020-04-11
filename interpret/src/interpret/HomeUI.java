@@ -180,11 +180,15 @@ public class HomeUI extends JFrame implements ActionListener{
 
 		} else if (command.equals(Action.Edit.name())) {
 			if (instanceList.getSelectedRow() == -1) {
-				MessageDialog.createExceptionDialog(this, "Select instance you want to edit.");
+				MessageDialog.createExceptionDialog(this, "Select instance to edit.");
 				return;
 			}
 			String instanceName = tableModel.getValueAt(instanceList.getSelectedRow(), 0).toString();
-			new InterpretInstanceUI(InstanceManager.getInstance().getCreatedObject(instanceName), instanceName);
+			if (InstanceManager.getInstance().getCreatedObject(instanceName).getCreatedObject().getClass().isArray()) {
+				new InterpretArrayInstanceUI(InstanceManager.getInstance().getCreatedObject(instanceName), instanceName);
+			} else {
+				new InterpretInstanceUI(InstanceManager.getInstance().getCreatedObject(instanceName), instanceName);
+			}
 		}
 	}
 

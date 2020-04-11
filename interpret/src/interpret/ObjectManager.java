@@ -70,7 +70,6 @@ public class ObjectManager {
 			paramArray = new Object[paramList.size()];
 		}
 		for (int i = 0; i < paramList.size(); i++) {
-			System.out.println(params[i].getType());
 			paramArray[i] = TypeUtil.convertType(paramList.get(i), params[i].getType().toString());
 		}
 		className = Interpret.trimPackage(clazz.toString());

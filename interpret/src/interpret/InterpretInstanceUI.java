@@ -12,6 +12,7 @@ import java.awt.event.WindowEvent;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,14 +39,12 @@ public class InterpretInstanceUI extends JFrame implements ActionListener{
 	private JTable parameterTable;
 	private JTable objectParameterTable;
 	private JComboBox<String> methodBoxList;
-//	private Field[] memList;
 	private List<Field> memberList;
-//	private Method[] methods;
 	private List<Method> methodList;
 	private Object targetObject;
 	private int selectedMethodIndex = 0;
 
-	private enum Action{
+	protected enum Action{
 		ExcecMethod,
 		ChangeObjectParam
 	}
@@ -226,9 +225,13 @@ public class InterpretInstanceUI extends JFrame implements ActionListener{
 
 	}
 
+	/**
+	 * methodのテーブル
+	 */
 	private void createMethodList() {
 
-		methodList = Arrays.asList(targetObjectManager.getTargetClass().getDeclaredMethods());
+//		methodList = Arrays.asList(targetObjectManager.getTargetClass().getDeclaredMethods());
+		methodList = Arrays.asList(targetObject.getClass().getDeclaredMethods());
 		methodList.sort(new Comparator<Method>() {
 			@Override
 			public int compare(Method o1, Method o2) {
@@ -261,12 +264,13 @@ public class InterpretInstanceUI extends JFrame implements ActionListener{
 		}
 	}
 
+	/**
+	 * Fieldのテーブル
+	 */
 	private void createFields() {
 		objectParamTableModel.setRowCount(0);
-//		memList = targetObjectManager.getTargetClass().getDeclaredFields();
-		memberList = Arrays.asList(targetObjectManager.getTargetClass().getDeclaredFields());
+		memberList = Arrays.asList(targetObject.getClass().getDeclaredFields());
 		memberList.sort(new Comparator<Field>() {
-
 			@Override
 			public int compare(Field o1, Field o2) {
 				return o1.getName().compareToIgnoreCase(o2.getName());
@@ -275,8 +279,11 @@ public class InterpretInstanceUI extends JFrame implements ActionListener{
 		for (Field member : memberList) {
 			try {
 				member.setAccessible(true);
-				objectParamTableModel.addRow(new String[] {Interpret.trimPackage(member.getName()), Interpret.trimPackage(member.getDeclaringClass().toString()), member.get(targetObject).toString()});
-			} catch (IllegalArgumentException | IllegalAccessException e) {
+				Field modifiersField = Field.class.getDeclaredField("modifiers");          // Fieldクラスはmodifiersでアクセス対象のフィールドのアクセス判定を行っているのでこれを更新する。
+		        modifiersField.setAccessible(true);                                        // modifiers自体もprivateなのでアクセス可能にする。
+		        modifiersField.setInt(member, member.getModifiers() & ~Modifier.PRIVATE & ~Modifier.FINAL);
+				objectParamTableModel.addRow(new String[] {Interpret.trimPackage(member.getName()), Interpret.trimPackage(member.getType().getName()), member.get(targetObject).toString()});
+			} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
 				e.printStackTrace();
 			}
 		}
@@ -287,18 +294,49 @@ public class InterpretInstanceUI extends JFrame implements ActionListener{
 		String command = e.getActionCommand();
 
 		if (command.equals(Action.ExcecMethod.name())) {
-			System.out.println("Excec method");
-			//テーブルに入力された変更確定
-			if (paramTableModel.getRowCount() > 0 && parameterTable.getCellEditor() != null) {
+			if (paramTableModel.getRowCount() > 0 && parameterTable.getCellEditor() != null) {//テーブルに入力された変更確定
 				parameterTable.getCellEditor().stopCellEditing();
+			} else if (methodList.size() == 0) {
+				MessageDialog.createExceptionDialog(this, "No method.");
+				return;
 			}
 			executeMethod();
-		} else if (command.equals(Action.ChangeObjectParam.name())) {//instance作成
-			System.out.println("Change Parameter");
-
+		} else if (command.equals(Action.ChangeObjectParam.name())) {
+			if (objectParamTableModel.getRowCount() > 0 && objectParameterTable.getCellEditor() != null) {
+				objectParameterTable.getCellEditor().stopCellEditing();
+			} else if (memberList.size() == 0) {
+				MessageDialog.createMessageDialog(this, "No field.");
+			}
+			setUpdateFieldValue();
 		}
 	}
 
+	/**
+	 * フィールド更新
+	 */
+	private void setUpdateFieldValue() {
+		for (int i = 0; i < memberList.size(); i++) {
+			String currencValue = objectParamTableModel.getValueAt(i, 2).toString();
+			Field targetField = memberList.get(i);
+			try {
+				targetField.setAccessible(true);
+				targetField.get(targetObject).toString();
+				if (!targetField.get(targetObject).toString().equals(currencValue)) {
+					targetField.set(targetObject, TypeUtil.convertType(currencValue, targetField.getType().getName()));
+				}
+			} catch (IllegalArgumentException | IllegalAccessException e) {
+				MessageDialog.createExceptionDialog(this, e);
+				try {
+					objectParamTableModel.setValueAt(targetField.get(targetObject).toString(), i, 2);
+				} catch (IllegalArgumentException | IllegalAccessException e1) {
+				}
+			}
+		}
+	}
+
+	/**
+	 * 選択されたメソッドを実行
+	 */
 	private void executeMethod() {
 		Method execMethod = methodList.get(methodBoxList.getSelectedIndex());
 		try {

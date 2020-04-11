@@ -1,8 +1,10 @@
 package interpret;
 
+import java.lang.reflect.Array;
+
 public class TypeUtil {
 
-	private enum PrimitiveType{
+	enum PrimitiveType{
 		TypeInt("int"){
 			@Override
 			public Object getConvertObj(String value) {
@@ -12,6 +14,11 @@ public class TypeUtil {
 			@Override
 			public Class<?> getPrimitiveClass() {
 				return int.class;
+			}
+
+			@Override
+			public void setPrimitiveArray(Object arrayObject, int index, String value) {
+				Array.setInt(arrayObject, index, Integer.valueOf(value));
 			}
 		},
 		TypeDouble("double"){
@@ -23,6 +30,10 @@ public class TypeUtil {
 			public Class<?> getPrimitiveClass() {
 				return double.class;
 			}
+			@Override
+			public void setPrimitiveArray(Object arrayObject, int index, String value) {
+				Array.setDouble(arrayObject, index, Double.valueOf(value));
+			}
 		},
 		TypeFloat("float"){
 			@Override
@@ -32,6 +43,10 @@ public class TypeUtil {
 			@Override
 			public Class<?> getPrimitiveClass() {
 				return float.class;
+			}
+			@Override
+			public void setPrimitiveArray(Object arrayObject, int index, String value) {
+				Array.setFloat(arrayObject, index, Float.valueOf(value));
 			}
 		},
 		TypeByte("byte"){
@@ -43,6 +58,10 @@ public class TypeUtil {
 			public Class<?> getPrimitiveClass() {
 				return byte.class;
 			}
+			@Override
+			public void setPrimitiveArray(Object arrayObject, int index, String value) {
+				Array.setByte(arrayObject, index, Byte.valueOf(value));
+			}
 		},
 		TypeLong("long"){
 			@Override
@@ -52,6 +71,10 @@ public class TypeUtil {
 			@Override
 			public Class<?> getPrimitiveClass() {
 				return long.class;
+			}
+			@Override
+			public void setPrimitiveArray(Object arrayObject, int index, String value) {
+				Array.setLong(arrayObject, index, Long.valueOf(value));
 			}
 		},
 		TypeBoolean("boolean"){
@@ -63,6 +86,10 @@ public class TypeUtil {
 			public Class<?> getPrimitiveClass() {
 				return long.class;
 			}
+			@Override
+			public void setPrimitiveArray(Object arrayObject, int index, String value) {
+				Array.setBoolean(arrayObject, index, Boolean.valueOf(value));
+			}
 		},
 		TypeChar("char"){
 			@Override
@@ -72,6 +99,10 @@ public class TypeUtil {
 			@Override
 			public Class<?> getPrimitiveClass() {
 				return char.class;
+			}
+			@Override
+			public void setPrimitiveArray(Object arrayObject, int index, String value) {
+				Array.setChar(arrayObject, index, value.toCharArray()[0]);
 			}
 		},
 		TypeShort("short"){
@@ -83,6 +114,10 @@ public class TypeUtil {
 			public Class<?> getPrimitiveClass() {
 				return char.class;
 			}
+			@Override
+			public void setPrimitiveArray(Object arrayObject, int index, String value) {
+				Array.setShort(arrayObject, index, Short.valueOf(value));
+			}
 		},
 		TypeString("class java.lang.String"){
 			@Override
@@ -93,10 +128,29 @@ public class TypeUtil {
 			public Class<?> getPrimitiveClass() {
 				throw new UnsupportedOperationException();
 			}
+			@Override
+			public void setPrimitiveArray(Object arrayObject, int index, String value) {
+				throw new UnsupportedOperationException();
+			}
+		},
+		TypeTrimString("String"){
+			@Override
+			public Object getConvertObj(String value) {
+				return value;
+			}
+			@Override
+			public Class<?> getPrimitiveClass() {
+				throw new UnsupportedOperationException();
+			}
+			@Override
+			public void setPrimitiveArray(Object arrayObject, int index, String value) {
+				throw new UnsupportedOperationException();
+			}
 		},;//PremitiveではないがStringはそのままOK
 
 		public abstract Object getConvertObj(String value);
 		public abstract Class<?> getPrimitiveClass();
+		public abstract void setPrimitiveArray(Object arrayObject,int index, String value);
 
 		private String typeName;
 		private PrimitiveType(String type) {
@@ -107,9 +161,17 @@ public class TypeUtil {
 		}
 	}
 
+	public static PrimitiveType getPrimitiveType(String name) {
+		for (PrimitiveType element : PrimitiveType.values()) {
+			if (element.getTypeName().equals(name)) {
+				return element;
+			}
+		}
+		return null;
+	}
+
 	public static Object convertType(String value, String type) {
 		if (InstanceManager.getInstance().getCreatedObject(value) != null) {
-			System.out.println("InstanceManager : " + value);
 			return InstanceManager.getInstance().getCreatedObject(value).getCreatedObject();
 		}
 		for (PrimitiveType pri : PrimitiveType.values()) {
