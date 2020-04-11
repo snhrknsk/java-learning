@@ -10,8 +10,13 @@ import java.awt.event.ItemListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -32,10 +37,13 @@ public class InterpretInstanceUI extends JFrame implements ActionListener{
 	private DefaultTableModel objectParamTableModel;
 	private JTable parameterTable;
 	private JTable objectParameterTable;
-	private JComboBox<String> methodList;
-	private Field[] memList;
-	private Method[] methods;
+	private JComboBox<String> methodBoxList;
+//	private Field[] memList;
+	private List<Field> memberList;
+//	private Method[] methods;
+	private List<Method> methodList;
 	private Object targetObject;
+	private int selectedMethodIndex = 0;
 
 	private enum Action{
 		ExcecMethod,
@@ -99,21 +107,22 @@ public class InterpretInstanceUI extends JFrame implements ActionListener{
 	    gbc.weightx = 1.0;
 	    gbc.weighty = 1.0;
 	    gbc.insets = insets;
-	    methodList = new JComboBox<>();
+	    methodBoxList = new JComboBox<>();
 
-	    methodList.addActionListener(this);
-	    methodList.addItemListener(new ItemListener() {
+	    methodBoxList.addActionListener(this);
+	    methodBoxList.addItemListener(new ItemListener() {
 
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED){
-				     selectmethod(methodList.getSelectedIndex());
+					selectedMethodIndex = methodBoxList.getSelectedIndex();
+				    selectmethod(selectedMethodIndex);
 				}
 			}
 		});
 	    createMethodList();
-		gbLayout.setConstraints(methodList, gbc);
-		panel.add(methodList);
+		gbLayout.setConstraints(methodBoxList, gbc);
+		panel.add(methodBoxList);
 
 		//Parameter
 		gbc.fill = GridBagConstraints.BOTH;
@@ -165,7 +174,7 @@ public class InterpretInstanceUI extends JFrame implements ActionListener{
 	    gbc.gridy = 0;
 	    gbc.gridwidth = 1;
 	    gbc.gridheight = 1;
-	    gbc.weightx = 1.0;
+	    gbc.weightx = 2.5;
 	    gbc.weighty = 1.0;
 	    gbc.insets = insets;
 	    JLabel objectParamLabel = new JLabel("Instance Parameters : ");
@@ -219,25 +228,51 @@ public class InterpretInstanceUI extends JFrame implements ActionListener{
 
 	private void createMethodList() {
 
-		methods = targetObjectManager.getTargetClass().getDeclaredMethods();
-		for (Method method : methods) {
-			methodList.addItem(Interpret.trimPackage(method.getName()));
+		methodList = Arrays.asList(targetObjectManager.getTargetClass().getDeclaredMethods());
+		methodList.sort(new Comparator<Method>() {
+			@Override
+			public int compare(Method o1, Method o2) {
+				return o1.getName().compareToIgnoreCase(o2.getName());
+			}
+		});
+		for (Method method : methodList) {
+			methodBoxList.addItem(createMethodName(method));
 		}
+	}
 
+	private String createMethodName(Method method) {
+		StringBuilder methodName = new StringBuilder(method.getName());
+		methodName.append("(");
+		for (int i = 0; i < method.getParameterCount(); i++) {
+			methodName.append(Interpret.trimPackage(method.getParameters()[i].getType().getName()));
+			if (i != method.getParameterCount() - 1) {
+				methodName.append(", ");
+			}
+		}
+		methodName.append(")");
+		return methodName.toString();
 	}
 
 	private void selectmethod(int selectedIndex) {
 		paramTableModel.setRowCount(0);
-		Parameter[] params = methods[selectedIndex].getParameters();
+		Parameter[] params = methodList.get(selectedIndex).getParameters();
 		for (int i = 0; i < params.length; i++) {
 			paramTableModel.addRow(new String[] {((Integer)i).toString(), Interpret.trimPackage(params[i].getType().getName()),"" });
 		}
 	}
 
 	private void createFields() {
-		memList = targetObjectManager.getTargetClass().getDeclaredFields();
-		//TODO: sort
-		for (Field member : memList) {
+		objectParamTableModel.setRowCount(0);
+//		memList = targetObjectManager.getTargetClass().getDeclaredFields();
+		memberList = Arrays.asList(targetObjectManager.getTargetClass().getDeclaredFields());
+		memberList.sort(new Comparator<Field>() {
+
+			@Override
+			public int compare(Field o1, Field o2) {
+				return o1.getName().compareToIgnoreCase(o2.getName());
+			}
+		});
+		for (Field member : memberList) {
 			try {
 				member.setAccessible(true);
 				objectParamTableModel.addRow(new String[] {Interpret.trimPackage(member.getName()), Interpret.trimPackage(member.getDeclaringClass().toString()), member.get(targetObject).toString()});
@@ -253,11 +288,46 @@ public class InterpretInstanceUI extends JFrame implements ActionListener{
 
 		if (command.equals(Action.ExcecMethod.name())) {
 			System.out.println("Excec method");
-
+			//テーブルに入力された変更確定
+			if (paramTableModel.getRowCount() > 0 && parameterTable.getCellEditor() != null) {
+				parameterTable.getCellEditor().stopCellEditing();
+			}
+			executeMethod();
 		} else if (command.equals(Action.ChangeObjectParam.name())) {//instance作成
 			System.out.println("Change Parameter");
 
 		}
+	}
+
+	private void executeMethod() {
+		Method execMethod = methodList.get(methodBoxList.getSelectedIndex());
+		try {
+			List<String> paramList = getMethodTableParam();
+			Object[] paramArray = null;
+			if (paramList.size() != 0) {
+				paramArray = new Object[paramList.size()];
+			} else {
+				paramArray = new Object[0];
+			}
+			for (int i = 0; i < paramList.size(); i++) {
+				paramArray[i] = TypeUtil.convertType(paramList.get(i), paramTableModel.getValueAt(i, 1).toString());
+			}
+			Object returnValue = execMethod.invoke(targetObject, paramArray);
+			String returnMessage = Interpret.trimPackage(execMethod.getReturnType().getName()) + " : " + returnValue.toString();
+			MessageDialog.createMessageDialog(this, returnMessage);
+			createFields();
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {
+			e1.printStackTrace();
+			MessageDialog.createExceptionDialog(this, e1);
+		}
+	}
+
+	private List<String> getMethodTableParam() {
+		List<String> paramList = new ArrayList<>();
+		for (int i = 0; i < paramTableModel.getRowCount(); i++) {
+			paramList.add(paramTableModel.getValueAt(i, 2).toString());
+		}
+		return paramList;
 	}
 
 }

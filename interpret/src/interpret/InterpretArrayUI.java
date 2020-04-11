@@ -199,7 +199,7 @@ public class InterpretArrayUI extends JFrame implements ActionListener{
 				objectManager = new ObjectManager(target);
 				createArgTable();
 			} catch (ClassNotFoundException e1) {
-				ExceptionDialog.createExceptionDialog(this, e1);
+				MessageDialog.createExceptionDialog(this, e1);
 			}
 		} else if (command.equals(ActionItem.CreateButton.name())) {//instance作成
 			if (tableModel.getRowCount() > 0) {
@@ -212,7 +212,7 @@ public class InterpretArrayUI extends JFrame implements ActionListener{
 				home.addObject(objectManager);
 				dispose();
 			} catch (Exception e1) {
-				ExceptionDialog.createExceptionDialog(this, e1);
+				MessageDialog.createExceptionDialog(this, e1);
 			}
 		}
 	}

@@ -49,4 +49,15 @@ public class Interpret {
 		return result;
 	}
 
+	public static String trimException(String target) {
+		return target.split("throws")[0];
+	}
+
+	public static String trimModifier(String target) {
+		String result;
+		result = target.replaceAll("public", "").replaceAll("protected", "").replaceAll("private", "");
+		result = result.replaceAll("static", "");
+		return result;
+	}
+
 }

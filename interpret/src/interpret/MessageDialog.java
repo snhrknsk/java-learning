@@ -3,7 +3,7 @@ package interpret;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-public class ExceptionDialog{
+public class MessageDialog {
 
 	public static void createExceptionDialog(JFrame owner, Exception e) {
 		JOptionPane.showMessageDialog(owner, e);
@@ -14,4 +14,7 @@ public class ExceptionDialog{
 		JOptionPane.showMessageDialog(owner, message);
 	}
 
+	public static void createMessageDialog(JFrame owner, String message) {
+		JOptionPane.showMessageDialog(owner, message);
+	}
 }

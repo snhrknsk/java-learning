@@ -180,7 +180,7 @@ public class HomeUI extends JFrame implements ActionListener{
 
 		} else if (command.equals(Action.Edit.name())) {
 			if (instanceList.getSelectedRow() == -1) {
-				ExceptionDialog.createExceptionDialog(this, "Select instance you want to edit.");
+				MessageDialog.createExceptionDialog(this, "Select instance you want to edit.");
 				return;
 			}
 			String instanceName = tableModel.getValueAt(instanceList.getSelectedRow(), 0).toString();
