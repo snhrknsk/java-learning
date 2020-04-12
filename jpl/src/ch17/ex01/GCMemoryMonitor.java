@@ -1,5 +1,6 @@
 package ch17.ex01;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class GCMemoryMonitor {
@@ -7,18 +8,27 @@ public class GCMemoryMonitor {
 	private static Map<String, Integer> map;
 
 	public static void main(String[] args) throws InterruptedException {
-		showMemory("after startup");
+
+		Runtime rt = Runtime.getRuntime();
+
+		System.out.println("Memory Resource");
+		System.out.println("Total " +  rt.totalMemory());
+		System.out.println("MAX   " + rt.maxMemory());
+
+		System.out.println("Start-up:");
+		System.out.println("Free " + rt.freeMemory());
 		//オブジェクト作成
-		for (int i = 0; i < 1000; i++) {
+		map = new HashMap<>();
+		for (int i = 0; i < 10000; i++) {
 			map.put(String.valueOf(i), i);
 		}
-		showMemory("after create objects-");
+		System.out.println("After create Object:");
+		System.out.println("Free " + rt.freeMemory());
 		//オブジェクトリリース
 		map.clear();
 		map = null;
 
 		//GC
-		Runtime rt = Runtime.getRuntime();
 		long isFree = rt.freeMemory();
 		long wasFree;
 		do {
@@ -27,14 +37,8 @@ public class GCMemoryMonitor {
 			rt.gc();
 			isFree = rt.freeMemory();
 		} while (isFree > wasFree);
-		showMemory("after GC");
+		System.out.println("After GC:");
+		System.out.println("Free " + rt.freeMemory());
 	}
 
-	public static void showMemory(String message) {
-		Runtime rt = Runtime.getRuntime();
-		System.out.println("Memory Monitor");
-		System.out.println("free: " + rt.freeMemory());
-		System.out.println("total: " +  rt.totalMemory());
-		System.out.println("max: " + rt.maxMemory());
-	}
 }
