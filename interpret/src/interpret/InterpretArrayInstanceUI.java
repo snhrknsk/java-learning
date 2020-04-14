@@ -246,7 +246,11 @@ public class InterpretArrayInstanceUI extends JFrame implements ActionListener {
 		for (int i = 0; i < Array.getLength(targetObject); i++) {
 			try {
 				if (TypeUtil.isPrimitive(typeName) && typeName.equals("String")) {
-					TypeUtil.getPrimitiveType(typeName).setPrimitiveArray(targetObject, i	,  objectParamTableModel.getValueAt(i, 2).toString());
+					try {
+						TypeUtil.getPrimitiveType(typeName).setPrimitiveArray(targetObject, i	,  objectParamTableModel.getValueAt(i, 2).toString());
+					} catch (UnsupportedOperationException e) {
+						Array.set(targetObject, i,  TypeUtil.convertType(objectParamTableModel.getValueAt(i, 2).toString(), targetObjectManager.getTargetClass().getName()));
+					}
 				} else {
 					Array.set(targetObject, i,  TypeUtil.convertType(objectParamTableModel.getValueAt(i, 2).toString(), targetObjectManager.getTargetClass().getName()));
 				}

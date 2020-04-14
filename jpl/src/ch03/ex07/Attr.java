@@ -32,7 +32,7 @@ public class Attr {
 	}
 
 	public static void main(String...strings) {
-		"a".equals("test");
+
 	}
 
 }
