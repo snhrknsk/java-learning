@@ -36,6 +36,7 @@ public class ThreadPool {
 	private boolean isShutdown = false;
 	private List<Runnable> requestQueue = Collections.synchronizedList(new LinkedList<>());
 	private final Worker[] threadPool;
+	static Object lock = new Object();
 
 	/**
      * Constructs ThreadPool.
@@ -47,6 +48,7 @@ public class ThreadPool {
      *         is less than 1
      */
     ThreadPool(int queueSize, int numberOfThreads) {
+    	System.out.println("######Create Thread Pool######");
         if (queueSize <= 0 || numberOfThreads <= 0) {
 			throw new IllegalArgumentException();
 		}
@@ -77,27 +79,51 @@ public class ThreadPool {
      * @throws IllegalStateException if threads has not been started.
      */
     public synchronized void stop() {
-        if (!isStarted) {
+
+    	if (!isStarted) {
 			throw new IllegalStateException();
 		}
 
+        System.out.println("Call stop");
         if (isShutdown) {
 			throw new IllegalStateException();
 		}
         isShutdown = true;
 
         //タスクがすべて終わるまでwait, takeTaskからnotifyでrequestが空であれば終了
+        int waitCount = 0;
+        while(waitCount != threadPool.length && isThreadStarted) {
+        	waitCount = 0;
+        	for (int i = 0; i < threadPool.length; i++) {
+    			if (threadPool[i].getState() == Thread.State.WAITING || threadPool[i].getState() == Thread.State.TERMINATED && requestQueue.size() == 0) {
+    				waitCount++;
+    			} else {
+    				System.out.println("Executing thread " + i);
+    				break;
+    			}
+    		}
+        	System.out.println(waitCount +"#"+ threadPool.length);
+        	if (waitCount != threadPool.length) {
+				try {
+					wait();
+				} catch (InterruptedException e) {
+				}
+			}
+//        	System.out.println(waitCount +":"+ threadPool.length);
+        }
 
         for (int i = 0; i < threadPool.length; i++) {
+        	System.out.println("notify stop " + i);
 			threadPool[i].signalStop();
 		}
 
         for (int i = 0; i < threadPool.length; i++) {
 			try {
-		        notifyAllThread();
+				System.out.println("Notify end " + i);
+				threadPool[i].signalNotify();
+				System.out.println("Notify join " + i);
 				threadPool[i].join();
 			} catch (InterruptedException e) {
-				e.printStackTrace();
 			}
 		}
         System.out.println("End All Thread");
@@ -126,6 +152,7 @@ public class ThreadPool {
 		}
         while (maxQueueSize <= requestQueue.size()) {
 			try {
+				System.out.println("Wait for worker executing");
 				wait();
 			} catch (InterruptedException e) {
 			}
@@ -136,25 +163,36 @@ public class ThreadPool {
 
     public synchronized Runnable takeTask() {
 
+    	System.out.println("Queue num " + requestQueue.size());
 		if (requestQueue.size() == 0 || requestQueue.get(0) == null) {
 			return null;
 		}
+		Runnable task = requestQueue.remove(0);
 		notifyAll();
-		return requestQueue.remove(0);
+		return task;
 	}
+
+    public synchronized void endTask() {
+    	if (isShutdown && requestQueue.size() == 0) {
+    		System.out.println("##notify end task");
+        	notifyAll();
+		}
+    }
 
     public void notifyWaitingWorker() {
 		for (int i = 0; i < threadPool.length; i++) {
 			if (threadPool[i].getState() == Thread.State.WAITING) {
-				threadPool[i].signalNotify();;
-				break;
+				threadPool[i].signalNotify();
+				return;
 			}
+			threadPool[i].signalAddWorkWhileRun();
 		}
+		System.out.println("No waiting thread");
 	}
 
     public synchronized void notifyAllThread() {
 		for (int i = 0; i < threadPool.length; i++) {
-			threadPool[i].signalNotify();;
+			threadPool[i].signalNotify();
 		}
 	}
 
@@ -163,9 +201,10 @@ public class ThreadPool {
 
 		private ThreadPool threadPool;
 		private boolean isWork = true;
+		private boolean isWorking = false;
 
 		public Worker(ThreadPool threadPool, String name) {
-//			super(name);
+			super(name);
 			this.threadPool = threadPool;
 		}
 
@@ -174,26 +213,46 @@ public class ThreadPool {
 			System.out.println("Start work");
 			Runnable task;
 			while(isWork) {
+				System.out.println("Takeing task " + this.getName());
 				task = threadPool.takeTask();
 				if (task != null) {
+//					System.out.println("Run worker " + this.getName() + " Waiting interrupt " + isWorking);
 					task.run();
+//					threadPool.endTask();
+					continue;
+				} else {
+					System.out.println("No worker " + this.getName());
+					isWorking = false;
 				}
 				try {
-					wait();
+					if (isWorking) {
+						continue;
+					} else if (isWork) {
+						System.out.println("Wait worker " + this.getName());
+						threadPool.endTask();
+						wait();
+						continue;
+					}
+					break;
+//					System.out.println("ARIEN");
 				} catch (InterruptedException e) {
-					e.printStackTrace();
+					System.out.println("Interrupted " + this.getName());
 				}
 			}
-			System.out.println("End worker : " + Thread.currentThread().getName());
+			System.out.println("End worker : " + this.getName());
 		}
 
-		public synchronized void signalStop() {
-			System.out.println("End worker notify " + Thread.currentThread().getName());
+		public void signalStop() {
 			isWork = false;
 		}
 
 		public synchronized void signalNotify() {
+			System.out.println("Notify worker " + this.getName() + " Stop " + isWork);
 			notifyAll();
+		}
+
+		public void signalAddWorkWhileRun() {
+			isWorking = true;
 		}
 
 	}
