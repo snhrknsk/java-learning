@@ -20,8 +20,8 @@ public class LinkedList {
 	}
 
 	/**
-	 * このインスタンスが持つObjectを返す
-	 * @return このインスタンスが持つObject
+	 * このインスタンスが持つ要素を返す
+	 * @return このインスタンスが持つ要素
 	 */
 	public Object getElement() {
 		return element;
@@ -38,7 +38,7 @@ public class LinkedList {
 	}
 
 	/**
-	 * このリストの最後の{@link LinkedList}の参照に、Objectを要素に持つ{@link LinkedLint}を追加する
+	 * このリストの{@link #getLast}を用いて得た最後の{@link LinkedList}インスタンスの参照に、Objectを要素に持つ{@link LinkedLint}を追加する
 	 * @param
 	 * 追加する{@link LinkedList}の要素
 	 */
