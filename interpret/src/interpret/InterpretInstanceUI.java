@@ -1,5 +1,6 @@
 package interpret;
 
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -15,9 +16,12 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -43,6 +47,7 @@ public class InterpretInstanceUI extends JFrame implements ActionListener{
 	private List<Method> methodList;
 	private Object targetObject;
 	private int selectedMethodIndex = 0;
+	private Map<String, String> preModifiedFieldMap = new HashMap<>();
 
 	protected enum Action{
 		ExcecMethod,
@@ -59,7 +64,8 @@ public class InterpretInstanceUI extends JFrame implements ActionListener{
 
 	private void initialize() {
 
-		setSize(700, 500);
+
+		setSize(900, 500);
 		setResizable(false);
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
@@ -119,7 +125,7 @@ public class InterpretInstanceUI extends JFrame implements ActionListener{
 				}
 			}
 		});
-	    createMethodList();
+	    createMethodList();methodBoxList.setPreferredSize(new Dimension(180, 40));
 		gbLayout.setConstraints(methodBoxList, gbc);
 		panel.add(methodBoxList);
 
@@ -230,8 +236,22 @@ public class InterpretInstanceUI extends JFrame implements ActionListener{
 	 */
 	private void createMethodList() {
 
-//		methodList = Arrays.asList(targetObjectManager.getTargetClass().getDeclaredMethods());
-		methodList = Arrays.asList(targetObject.getClass().getDeclaredMethods());
+		Class<?> clazz = targetObject.getClass();
+		Set<String> methodSet = new HashSet<>();
+		methodList = new ArrayList<>();
+		while (clazz != null) {
+            Method[] methods = clazz.getDeclaredMethods();
+            for (Method method : methods) {
+            	if (!methodSet.contains(createMethodName(method))) {
+    				methodList.add(method);
+    				methodSet.add(createMethodName(method));
+    				System.out.println(method.toGenericString());
+				} else {
+					System.out.println("parent oveeride");
+				}
+			}
+            clazz = clazz.getSuperclass();
+        }
 		methodList.sort(new Comparator<Method>() {
 			@Override
 			public int compare(Method o1, Method o2) {
@@ -269,7 +289,20 @@ public class InterpretInstanceUI extends JFrame implements ActionListener{
 	 */
 	private void createFields() {
 		objectParamTableModel.setRowCount(0);
-		memberList = Arrays.asList(targetObject.getClass().getDeclaredFields());
+		Class<?> clazz = targetObject.getClass();
+		Set<String> memberSet = new HashSet<>();
+		memberList = new ArrayList<>();
+		while(clazz != null) {
+			Field[] members = clazz.getDeclaredFields();
+			for (Field field : members) {
+				if (!memberSet.contains(field.getName())) {
+					memberList.add(field);
+					memberSet.add(field.getName());
+				}
+			}
+			clazz = clazz.getSuperclass();
+		}
+//		memberList = Arrays.asList(targetObject.getClass().getDeclaredFields());
 		memberList.sort(new Comparator<Field>() {
 			@Override
 			public int compare(Field o1, Field o2) {
@@ -282,8 +315,9 @@ public class InterpretInstanceUI extends JFrame implements ActionListener{
 				Field modifiersField = Field.class.getDeclaredField("modifiers");          // Fieldクラスはmodifiersでアクセス対象のフィールドのアクセス判定を行っているのでこれを更新する。
 		        modifiersField.setAccessible(true);                                        // modifiers自体もprivateなのでアクセス可能にする。
 		        modifiersField.setInt(member, member.getModifiers() & ~Modifier.PRIVATE & ~Modifier.FINAL);
-				objectParamTableModel.addRow(new String[] {Interpret.trimPackage(member.getName()), Interpret.trimPackage(member.getType().getName()), member.get(targetObject).toString()});
-			} catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
+				objectParamTableModel.addRow(new String[] {Interpret.trimPackage(member.getName()), Interpret.trimPackage(member.getType().getName()), (member.get(targetObject) != null ? member.get(targetObject).toString() : null ) });
+				preModifiedFieldMap.put(member.getName(), (member.get(targetObject) != null ? member.get(targetObject).toString() : null ));
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
@@ -316,13 +350,18 @@ public class InterpretInstanceUI extends JFrame implements ActionListener{
 	 */
 	private void setUpdateFieldValue() {
 		for (int i = 0; i < memberList.size(); i++) {
-			String currencValue = objectParamTableModel.getValueAt(i, 2).toString();
+			String currencValue = (objectParamTableModel.getValueAt(i, 2) != null ? objectParamTableModel.getValueAt(i, 2).toString() : "" );
+			String preValue = preModifiedFieldMap.get(objectParamTableModel.getValueAt(i, 0)) != null ? preModifiedFieldMap.get(objectParamTableModel.getValueAt(i, 0)) : "";
 			Field targetField = memberList.get(i);
+
 			try {
 				targetField.setAccessible(true);
-				targetField.get(targetObject).toString();
-				if (!targetField.get(targetObject).toString().equals(currencValue)) {
-					targetField.set(targetObject, TypeUtil.convertType(currencValue, targetField.getType().getName()));
+				if (!preValue.equals(currencValue)) {
+					if (targetField.getType().equals(String.class)) {
+						targetField.set(targetObject, TypeUtil.convertType(currencValue, targetField.getType().getName()));
+					} else {
+						targetField.set(targetObject, TypeUtil.convertType(currencValue, targetField.getType().getName()));
+					}
 				}
 			} catch (IllegalArgumentException | IllegalAccessException e) {
 				MessageDialog.createExceptionDialog(this, e);
@@ -351,7 +390,9 @@ public class InterpretInstanceUI extends JFrame implements ActionListener{
 				paramArray[i] = TypeUtil.convertType(paramList.get(i), paramTableModel.getValueAt(i, 1).toString());
 			}
 			Object returnValue = execMethod.invoke(targetObject, paramArray);
-			String returnMessage = Interpret.trimPackage(execMethod.getReturnType().getName()) + " : " + returnValue.toString();
+			String returnType = execMethod.getReturnType().getName() == null ? "void" : execMethod.getReturnType().getName();
+			String returnValueStr = returnValue != null ? returnValue.toString() : "";
+			String returnMessage = Interpret.trimPackage(returnType) + " : " + returnValueStr;
 			MessageDialog.createMessageDialog(this, returnMessage);
 			createFields();
 		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e1) {

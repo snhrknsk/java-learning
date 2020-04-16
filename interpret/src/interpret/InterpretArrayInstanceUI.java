@@ -38,6 +38,7 @@ public class InterpretArrayInstanceUI extends JFrame implements ActionListener {
 	public InterpretArrayInstanceUI(ObjectManager target, String instanceName) {
 		this.targetObjectManager = target;
 		this.targetObject = targetObjectManager.getCreatedObject();
+		//配列の[を消す [int→int
 		typeName = Interpret.trimPackage(targetObjectManager.getTargetClassName()).split("[\\[]")[0];
 		setTitle(instanceName);
 		initialize();
@@ -256,6 +257,9 @@ public class InterpretArrayInstanceUI extends JFrame implements ActionListener {
 				}
 			} catch (Exception e) {
 				MessageDialog.createExceptionDialog(this, e);
+
+				Object target = Array.get(targetObject, i);
+				objectParamTableModel.setValueAt(convertName(target), i, 2);
 			}
 
 		}

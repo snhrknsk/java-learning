@@ -126,7 +126,21 @@ public class TypeUtil {
 			}
 			@Override
 			public Class<?> getPrimitiveClass() {
+				return String.class;
+			}
+			@Override
+			public void setPrimitiveArray(Object arrayObject, int index, String value) {
 				throw new UnsupportedOperationException();
+			}
+		},
+		TypeString2("java.lang.String"){
+			@Override
+			public Object getConvertObj(String value) {
+				return value;
+			}
+			@Override
+			public Class<?> getPrimitiveClass() {
+				return String.class;
 			}
 			@Override
 			public void setPrimitiveArray(Object arrayObject, int index, String value) {
@@ -140,7 +154,7 @@ public class TypeUtil {
 			}
 			@Override
 			public Class<?> getPrimitiveClass() {
-				throw new UnsupportedOperationException();
+				return String.class;
 			}
 			@Override
 			public void setPrimitiveArray(Object arrayObject, int index, String value) {

@@ -1,0 +1,5 @@
+hoge = 3
+hoge + 2
+foo + 2
+foo - 7
+bar = 3

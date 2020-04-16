@@ -1,0 +1,2 @@
+hoge = 2
+hoge hoge + 1

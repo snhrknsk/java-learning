@@ -23,7 +23,7 @@ public class Interpret {
 			searchedClazz = Class.forName(interpretPackageQuery);
 		} catch (Exception e) {
 			String query = className;
-			if (!query.contains("java.lang.")) {
+			if (!query.contains(".")) {
 				query = "java.lang." + className;
 			}
 			searchedClazz = Class.forName(query);
@@ -43,10 +43,11 @@ public class Interpret {
 	}
 
 	public static String trimPackage(String target) {
-		String result;
-		result = target.replaceAll("java.lang.", "");
-		result = result.replaceFirst(Interpret.packageName, "");
-		return result;
+//		String result;
+//		result = target.replaceAll("java.lang.", "");
+//		result = result.replaceFirst(Interpret.packageName, "");
+		String[] temp = target.split("\\.");
+		return temp[temp.length - 1];
 	}
 
 	public static String trimException(String target) {
