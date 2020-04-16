@@ -5,9 +5,11 @@
 package ch14.ex10;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Simple Thread Pool class.
@@ -36,7 +38,8 @@ public class ThreadPool {
 	private boolean isShutdown = false;
 	private List<Runnable> requestQueue = Collections.synchronizedList(new LinkedList<>());
 	private final Worker[] threadPool;
-	static Object lock = new Object();
+	private Set<Worker> waitSet = Collections.synchronizedSet(new HashSet<>());
+	private static Object lock = new Object();
 
 	/**
      * Constructs ThreadPool.
@@ -48,7 +51,8 @@ public class ThreadPool {
      *         is less than 1
      */
     ThreadPool(int queueSize, int numberOfThreads) {
-    	System.out.println("######Create Thread Pool######");
+    	System.out.println("######Create Thread Poo ######");
+    	System.out.println("Thread Num : " + numberOfThreads + " Queue Size : " + queueSize);
         if (queueSize <= 0 || numberOfThreads <= 0) {
 			throw new IllegalArgumentException();
 		}
@@ -95,21 +99,19 @@ public class ThreadPool {
         while(waitCount != threadPool.length && isThreadStarted) {
         	waitCount = 0;
         	for (int i = 0; i < threadPool.length; i++) {
-    			if (threadPool[i].getState() == Thread.State.WAITING || threadPool[i].getState() == Thread.State.TERMINATED && requestQueue.size() == 0) {
+    			if (waitSet.contains(threadPool[i]) && requestQueue.size() == 0) {
     				waitCount++;
     			} else {
     				System.out.println("Executing thread " + i);
     				break;
     			}
     		}
-        	System.out.println(waitCount +"#"+ threadPool.length);
         	if (waitCount != threadPool.length) {
 				try {
 					wait();
 				} catch (InterruptedException e) {
 				}
 			}
-//        	System.out.println(waitCount +":"+ threadPool.length);
         }
 
         for (int i = 0; i < threadPool.length; i++) {
@@ -172,19 +174,16 @@ public class ThreadPool {
 		return task;
 	}
 
-    public synchronized void endTask() {
-    	if (isShutdown && requestQueue.size() == 0) {
-    		System.out.println("##notify end task");
-        	notifyAll();
-		}
-    }
-
     public void notifyWaitingWorker() {
 		for (int i = 0; i < threadPool.length; i++) {
 			if (threadPool[i].getState() == Thread.State.WAITING) {
 				threadPool[i].signalNotify();
 				return;
 			}
+//			if (waitSet.contains(threadPool[i])) {
+//				threadPool[i].signalNotify();
+//				return;
+//			}
 			threadPool[i].signalAddWorkWhileRun();
 		}
 		System.out.println("No waiting thread");
@@ -195,6 +194,15 @@ public class ThreadPool {
 			threadPool[i].signalNotify();
 		}
 	}
+
+    public synchronized void setWaitWorker(Worker worker) {
+    	notifyAll();
+    	waitSet.add(worker);
+    }
+
+    public void removeWaitWorker(Worker worker) {
+    	waitSet.remove(worker);
+    }
 
 
     private static class Worker extends Thread{
@@ -216,9 +224,8 @@ public class ThreadPool {
 				System.out.println("Takeing task " + this.getName());
 				task = threadPool.takeTask();
 				if (task != null) {
-//					System.out.println("Run worker " + this.getName() + " Waiting interrupt " + isWorking);
+					System.out.println("Run worker " + this.getName());
 					task.run();
-//					threadPool.endTask();
 					continue;
 				} else {
 					System.out.println("No worker " + this.getName());
@@ -229,12 +236,12 @@ public class ThreadPool {
 						continue;
 					} else if (isWork) {
 						System.out.println("Wait worker " + this.getName());
-						threadPool.endTask();
+						threadPool.setWaitWorker(this);
 						wait();
+						threadPool.removeWaitWorker(this);
 						continue;
 					}
 					break;
-//					System.out.println("ARIEN");
 				} catch (InterruptedException e) {
 					System.out.println("Interrupted " + this.getName());
 				}
@@ -247,7 +254,7 @@ public class ThreadPool {
 		}
 
 		public synchronized void signalNotify() {
-			System.out.println("Notify worker " + this.getName() + " Stop " + isWork);
+			System.out.println("Notify worker " + this.getName() + " Stop " + !isWork);
 			notifyAll();
 		}
 
