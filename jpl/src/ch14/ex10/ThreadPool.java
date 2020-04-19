@@ -73,6 +73,12 @@ public class ThreadPool {
         for (int i = 0; i < threadPool.length; i++) {
 			threadPool[i] = new Worker(this, "thread-" + i);
 		}
+        if (!isThreadStarted) {
+			for (int i = 0; i < threadPool.length; i++) {
+				threadPool[i].start();
+			}
+			isThreadStarted = true;
+		}
     }
 
     /**
@@ -146,16 +152,11 @@ public class ThreadPool {
         	throw new IllegalStateException();
 		}
         Objects.requireNonNull(runnable);
-        if (!isThreadStarted) {
-			for (int i = 0; i < threadPool.length; i++) {
-				threadPool[i].start();
-			}
-			isThreadStarted = true;
-		}
         while (maxQueueSize <= requestQueue.size()) {
 			try {
 				System.out.println("Wait for worker executing");
 				wait();
+				System.out.println("#Wait for worker executing");
 			} catch (InterruptedException e) {
 			}
 		}
@@ -171,14 +172,18 @@ public class ThreadPool {
 		}
 		Runnable task = requestQueue.remove(0);
 		notifyAll();
+		System.out.println("take task " + requestQueue.size());
 		return task;
 	}
 
     public void notifyWaitingWorker() {
 		for (int i = 0; i < threadPool.length; i++) {
+			System.out.println(threadPool[i].getName() +  threadPool[i].getState());
 			if (threadPool[i].getState() == Thread.State.WAITING) {
 				threadPool[i].signalNotify();
 				return;
+			} else if (threadPool[i].getState() == Thread.State.BLOCKED) {
+				threadPool[i].taskInterrupted();;
 			}
 //			if (waitSet.contains(threadPool[i])) {
 //				threadPool[i].signalNotify();
@@ -210,6 +215,7 @@ public class ThreadPool {
 		private ThreadPool threadPool;
 		private boolean isWork = true;
 		private boolean isWorking = false;
+		Runnable task;
 
 		public Worker(ThreadPool threadPool, String name) {
 			super(name);
@@ -219,7 +225,6 @@ public class ThreadPool {
 		@Override
 		public synchronized void run() {
 			System.out.println("Start work");
-			Runnable task;
 			while(isWork) {
 				System.out.println("Takeing task " + this.getName());
 				task = threadPool.takeTask();
@@ -254,12 +259,20 @@ public class ThreadPool {
 		}
 
 		public synchronized void signalNotify() {
-			System.out.println("Notify worker " + this.getName() + " Stop " + !isWork);
+			System.out.println("Notify worker " + this.getName());
 			notifyAll();
 		}
 
 		public void signalAddWorkWhileRun() {
 			isWorking = true;
+		}
+
+		public synchronized void taskInterrupted() {
+			if (task != null) {
+				task.notify();
+			} else {
+				System.out.println("task is null");
+			}
 		}
 
 	}
