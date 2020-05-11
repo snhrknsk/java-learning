@@ -185,6 +185,7 @@ public class DigitalWatch extends Frame implements ActionListener {
 		Rectangle rectText = fm.getStringBounds(timeStr, ct).getBounds();
 		fontLocationX=(int) ((dim.getWidth() - rectText.width)/2);
 		fontLocationY=(int) (( dim.height -rectText.height)/2 + fm.getMaxAscent() + 20);
+		System.out.println(rectText);
     }
 
     public Color getBackColor() {
