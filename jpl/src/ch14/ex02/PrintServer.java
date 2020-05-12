@@ -21,8 +21,9 @@ public class PrintServer implements Runnable {
 		if (threadId != Thread.currentThread().getId()) {
 			throw new IllegalStateException("コンストラクタで生成されたThreadではありません");
 		}
-		for(;;)
+		for(;;) {
 			realPrint(requests.remove());
+		}
 	}
 
 	public void realPrint(PrintJob job) {

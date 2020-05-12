@@ -5,7 +5,7 @@ import org.junit.Test;
 public class PrintServerTest {
 
 	@Test (expected = IllegalStateException.class)
-	public void test() {
+	public void testNG() {
 		PrintServer printServer = new PrintServer();
 		printServer.run();
 	}
