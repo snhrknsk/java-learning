@@ -37,7 +37,7 @@ public class DigitalWatch extends JFrame implements ActionListener {
 
 	private void initialize() {
 
-		setSize(350, 130);
+		setSize(350, 160);
 		setResizable(false);
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		//時計表示
@@ -98,14 +98,12 @@ public class DigitalWatch extends JFrame implements ActionListener {
 		@Override
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
-			System.out.println("test : " + strColor);
 			setBackground(backColor);
 			Graphics2D timeGraphic = (Graphics2D) g;
 			timeGraphic.setColor(strColor);
 			setFont(font);
 			setFontLocation(timeGraphic);
 			timeGraphic.drawString(FORMAT.format(time.getTime()), location.width, location.height);
-
 		}
 
 		/**
@@ -139,8 +137,7 @@ public class DigitalWatch extends JFrame implements ActionListener {
 			FontMetrics fm = this.getFontMetrics(font);
 			Rectangle rectText = fm.getStringBounds(timeStr, ct).getBounds();
 			location.width =(int) ((screenSize.getWidth() - rectText.width)/2);
-			//TODO: 高さ調節が微妙
-			location.height =(int) (( screenSize.height -rectText.height)/2 + fm.getMaxAscent() + 20)/2 ;
+			location.height=ct.getClipBounds().height-rectText.height/2;
 	    }
 	}
 }

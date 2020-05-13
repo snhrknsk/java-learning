@@ -10,8 +10,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.Format;
-import java.text.SimpleDateFormat;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -34,24 +32,28 @@ public class WatchPropertiesDialog extends JDialog implements ActionListener{
 	private JComboBox<WatchColor> backColorSelector;
 	private JComboBox<WatchColor> strColorSelector;
 	private JComboBox<String> fontSelector;
-	private final Format FORMAT = new SimpleDateFormat("HH:mm:ss");
 
 	private enum Action{
 		OK
 	}
 
 	private enum WatchSize{
-		SMALL(34),
-		MIDDLE(60),
-		LARGE(100);
+		SMALL(34, 300,130),
+		MIDDLE(60,350,160),
+		LARGE(100,600,250);
 		private int fontSize;
-		private Dimension dim;
-		private WatchSize(int size) {
+		private int width;
+		private int height;
+		private WatchSize(int size, int width, int height) {
 			this.fontSize = size;
-
+			this.width = width;
+			this.height = height;
 		}
 		public int getSize() {
 			return fontSize;
+		}
+		public int getHeight() {
+			return height;
 		}
 	}
 
@@ -76,6 +78,7 @@ public class WatchPropertiesDialog extends JDialog implements ActionListener{
 
 	public WatchPropertiesDialog(DigitalWatch watch) {
 		this.watch = watch;
+		setLocation(watch.getLocation().x + 10, watch.getLocation().y + 10);
 		initialize();
 
 	}
@@ -261,7 +264,7 @@ public class WatchPropertiesDialog extends JDialog implements ActionListener{
 	private Dimension getMaxScreenDimension(Font font) {
 		FontMetrics fontMetrics;
 		fontMetrics = this.getFontMetrics(font);
-		return new Dimension(maxNumWidth(fontMetrics), validateMaxHeight(fontMetrics));
+		return new Dimension(maxNumWidth(fontMetrics), screenSizeSelector.getItemAt(screenSizeSelector.getSelectedIndex()).getHeight());
 	}
 
 	/**
@@ -284,16 +287,4 @@ public class WatchPropertiesDialog extends JDialog implements ActionListener{
 		}
 		return width;
 	}
-
-    /**
-     * 最小サイズは縦130とする
-     * @param fontMetrics
-     * @return
-     */
-    private int validateMaxHeight(FontMetrics fontMetrics) {
-    	if (fontMetrics.getHeight() * 1.5 < 130) {
-			return 130;
-		}
-    	return (int) (fontMetrics.getHeight() * 1.8);
-    }
 }
