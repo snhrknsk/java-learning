@@ -54,11 +54,12 @@ public class InterpretInstanceUI extends JFrame implements ActionListener{
 		ChangeObjectParam
 	}
 
-	public InterpretInstanceUI(ObjectManager target, String instanceName) {
+	public InterpretInstanceUI(HomeUI home, ObjectManager target, String instanceName) {
 		this.targetObjectManager = target;
 		this.targetObject = targetObjectManager.getCreatedObject();
 		setTitle(instanceName);
 		initialize();
+		setLocation(home.getLocation().x + 20, home.getLocation().y + 20);
 		setVisible(true);
 	}
 
@@ -125,7 +126,8 @@ public class InterpretInstanceUI extends JFrame implements ActionListener{
 				}
 			}
 		});
-	    createMethodList();methodBoxList.setPreferredSize(new Dimension(180, 40));
+	    createMethodList();
+	    methodBoxList.setPreferredSize(new Dimension(180, 40));
 		gbLayout.setConstraints(methodBoxList, gbc);
 		panel.add(methodBoxList);
 
@@ -245,9 +247,6 @@ public class InterpretInstanceUI extends JFrame implements ActionListener{
             	if (!methodSet.contains(createMethodName(method))) {
     				methodList.add(method);
     				methodSet.add(createMethodName(method));
-    				System.out.println(method.toGenericString());
-				} else {
-					System.out.println("parent oveeride");
 				}
 			}
             clazz = clazz.getSuperclass();
@@ -259,7 +258,7 @@ public class InterpretInstanceUI extends JFrame implements ActionListener{
 			}
 		});
 		for (Method method : methodList) {
-			methodBoxList.addItem(createMethodName(method));
+			methodBoxList.addItem(trimLimitStrLength(createMethodName(method)));
 		}
 	}
 
@@ -274,6 +273,13 @@ public class InterpretInstanceUI extends JFrame implements ActionListener{
 		}
 		methodName.append(")");
 		return methodName.toString();
+	}
+
+	private String trimLimitStrLength(String methodName){
+		if (methodName.length() > 40) {
+			return methodName.substring(0, 40) + "...";
+		}
+		return methodName;
 	}
 
 	private void selectmethod(int selectedIndex) {

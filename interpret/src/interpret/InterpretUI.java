@@ -43,6 +43,7 @@ public class InterpretUI extends JFrame implements ActionListener {
 		this.home = home;
 		setTitle("Interpret");
 		initialize();
+		setLocation(home.getLocation().x + 20, home.getLocation().y + 20);
 		setVisible(true);
 	}
 

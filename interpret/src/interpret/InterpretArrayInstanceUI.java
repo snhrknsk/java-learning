@@ -35,13 +35,14 @@ public class InterpretArrayInstanceUI extends JFrame implements ActionListener {
 	private Object targetObject;
 	private String typeName;
 
-	public InterpretArrayInstanceUI(ObjectManager target, String instanceName) {
+	public InterpretArrayInstanceUI(HomeUI home, ObjectManager target, String instanceName) {
 		this.targetObjectManager = target;
 		this.targetObject = targetObjectManager.getCreatedObject();
 		//配列の[を消す [int→int
 		typeName = Interpret.trimPackage(targetObjectManager.getTargetClassName()).split("[\\[]")[0];
 		setTitle(instanceName);
 		initialize();
+		setLocation(home.getLocation().x + 20, home.getLocation().y + 20);
 		setVisible(true);
 	}
 

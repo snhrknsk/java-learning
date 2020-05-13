@@ -39,6 +39,9 @@ public class InstanceManager {
 	}
 
 	public String getClassName(Object target) {
+		if (target == null) {
+			return "null";
+		}
 		String instanceName = target.toString();
 		for (Iterator<String> i = instanceMap.keySet ().iterator(); i.hasNext (); ) {
 			String key = i.next ();

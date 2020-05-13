@@ -193,6 +193,9 @@ public class TypeUtil {
 				return pri.getConvertObj(value);
 			}
 		}
+		if (value.equals("null")) {
+			return null;
+		}
 		throw new IllegalArgumentException(type + " is not match(" + value + ")");
 	}
 

@@ -185,9 +185,9 @@ public class HomeUI extends JFrame implements ActionListener{
 			}
 			String instanceName = tableModel.getValueAt(instanceList.getSelectedRow(), 0).toString();
 			if (InstanceManager.getInstance().getCreatedObject(instanceName).getCreatedObject().getClass().isArray()) {
-				new InterpretArrayInstanceUI(InstanceManager.getInstance().getCreatedObject(instanceName), instanceName);
+				new InterpretArrayInstanceUI(this, InstanceManager.getInstance().getCreatedObject(instanceName), instanceName);
 			} else {
-				new InterpretInstanceUI(InstanceManager.getInstance().getCreatedObject(instanceName), instanceName);
+				new InterpretInstanceUI(this, InstanceManager.getInstance().getCreatedObject(instanceName), instanceName);
 			}
 		}
 	}
