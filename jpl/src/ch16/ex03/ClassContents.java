@@ -1,9 +1,6 @@
 package ch16.ex03;
 
 import java.lang.reflect.Member;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 public class ClassContents {
 	public static void main(String[] args) {
@@ -17,14 +14,12 @@ public class ClassContents {
 	}
 
 	public static void printAll(Class<?> c) {
-		Set<Member> set = new LinkedHashSet<>();
-		set.addAll(Arrays.asList(c.getDeclaredFields()));
-		set.addAll(Arrays.asList(c.getFields()));
-		set.addAll(Arrays.asList(c.getDeclaredConstructors()));
-		set.addAll(Arrays.asList(c.getConstructors()));
-		set.addAll(Arrays.asList(c.getDeclaredMethods()));
-		set.addAll(Arrays.asList(c.getMethods()));
-		printMembers(set.toArray(new Member[0]));
+		printMembers(c.getDeclaredFields());
+		printMembers(c.getFields());
+		printMembers(c.getDeclaredConstructors());
+		printMembers(c.getConstructors());
+		printMembers(c.getDeclaredMethods());
+		printMembers(c.getMethods());
 	}
 
 	public static void printMembers(Member[] mems) {
@@ -34,11 +29,11 @@ public class ClassContents {
 			}
 			String decl = m.toString();
 			System.out.print(" ");
-			System.out.println(strip(decl, "java.lang."));
+			System.out.println(trim(decl, "java.lang."));
 		}
 	}
 
-	private static String strip(String word, String regex) {
+	private static String trim(String word, String regex) {
 		word = word.replaceAll(regex, "");
 		return word;
 

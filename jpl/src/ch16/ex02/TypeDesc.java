@@ -64,9 +64,9 @@ public class TypeDesc {
 		}
 
 		//ネストしたクラスの表示
-		Class<?> nestClass = cls.getDeclaringClass();
-		if (nestClass != null) {
-			out.println("  nest in " + nestClass.getCanonicalName());
+		Class<?> nestedClass = cls.getDeclaringClass();
+		if (nestedClass != null) {
+			out.println("  nest in " + nestedClass.getCanonicalName());
 		}
 
 		Type[] interfaces = cls.getGenericInterfaces();

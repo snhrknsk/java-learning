@@ -6,6 +6,7 @@ import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 
 public class TypeDesc {
+
 	public static void main(String[] args) {
 		TypeDesc desc = new TypeDesc();
 		for (String name : args) {

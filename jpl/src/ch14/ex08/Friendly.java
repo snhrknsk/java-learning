@@ -10,11 +10,6 @@ public class Friendly {
 	}
 
 	public synchronized void hug() {
-		//sleepしないとデッドロックしなかった
-//		try {
-//			Thread.sleep(200);
-//		} catch (InterruptedException e) {
-//		}
 		System.out.println(Thread.currentThread().getName() + " in " + name + ".hug() trying to invoke " + partner.name + ".hugBack");
 		partner.hugBack();
 	}
