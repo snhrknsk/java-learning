@@ -169,7 +169,6 @@ public class ThreadPool {
 		if (requestQueue.size() == 0) {
 			try {
 				System.out.println("wait taking");
-				notifyAll();
 				wait();
 			} catch (InterruptedException e) {
 				System.out.println("Interrupted.");
