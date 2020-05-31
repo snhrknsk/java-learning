@@ -102,6 +102,7 @@ public class ThreadPool {
         synchronized (this) {
             while(requestQueue.size() != 0) {
         		try {
+        			System.out.println("Wait to finish remaining tasks");
     				wait();
     			} catch (InterruptedException e) {
     			}
