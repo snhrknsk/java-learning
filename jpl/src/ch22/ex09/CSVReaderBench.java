@@ -23,7 +23,7 @@ public class CSVReaderBench {
 
 	private static final int CELLS = 10;
 	private static final String[] TEST_REGEX = new String[]
-			{"(.*)", "([^,]*)", "([^,]*+)", "([^,]*?)"};
+			{ "(.*)", "([^,]*)", "([^,]*+)", "([^,]*?)" };
 
 	public static String benchMark(Readable r, String regex) throws IOException {
 
