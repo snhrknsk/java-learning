@@ -1,0 +1,7 @@
+Comment out#Comment
+#Comment1
+Simple#Comment2
+Complex#Comment3#Comment4
+Empty#
+Double##
+No Comment line
