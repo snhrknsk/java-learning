@@ -14,12 +14,13 @@ import org.junit.Test;
 
 public class CSVReaderTest {
 
+	private final File file = new File("./test/ch22/ex08/Test.csv");
+
 	@Test
 	public void test() {
-		File file = new File("./test/ch22/ex08/Test.csv");
 		List<String[]> expected = new ArrayList<>();
 		expected.add(new String[] {"1", "2","3","4","5"});
-		expected.add(new String[] {"6", "7","8","","10"});
+		expected.add(new String[] {"6", "7","8"," ","10"});
 
 		Reader source;
 		List<String[]> result = Collections.emptyList();
@@ -42,8 +43,6 @@ public class CSVReaderTest {
 
 	@Test(expected = IOException.class)
 	public void testException() throws IOException {
-		File file = new File("./test/ch22/ex07/Test.csv");
-
 		Reader source;
 		source = new FileReader(file);
 		CSVReader.readCSVTable(source, 10);
@@ -51,7 +50,6 @@ public class CSVReaderTest {
 
 	@Test(expected = IOException.class)
 	public void testCellLessException() throws IOException {
-		File file = new File("./test/ch22/ex07/Test.csv");
 		Reader source;
 		source = new FileReader(file);
 		CSVReader.readCSVTable(source, 2);

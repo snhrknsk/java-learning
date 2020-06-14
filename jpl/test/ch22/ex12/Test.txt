@@ -1,0 +1,6 @@
+name=foo
+name1=bar
+name2=hoge
+name3=Hello world.
+name4=
+name5=hoge hoge

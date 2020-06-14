@@ -1,4 +1,4 @@
-package ch22.ex07;
+package ch22.ex11;
 
 import static org.junit.Assert.*;
 
@@ -14,20 +14,19 @@ import org.junit.Test;
 
 public class CSVReaderTest {
 
-	private final File file = new File("./test/ch22/ex07/Test.csv");
+	private final File file = new File("./test/ch22/ex11/Test.csv");
 
 	@Test
 	public void test() {
-
 		List<String[]> expected = new ArrayList<>();
 		expected.add(new String[] {"1", "2","3","4","5"});
-		expected.add(new String[] {"6", "7","8","9","10"});
+		expected.add(new String[] {"6", "7","8"," ","10"});
 
 		Reader source;
 		List<String[]> result = Collections.emptyList();
 		try {
 			source = new FileReader(file);
-			result = CSVReader.readCSVTable(source, 5);
+			result = CSVReader.readCSV(source, 5);
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail();
@@ -46,8 +45,14 @@ public class CSVReaderTest {
 	public void testException() throws IOException {
 		Reader source;
 		source = new FileReader(file);
-		CSVReader.readCSVTable(source, 10);
+		CSVReader.readCSV(source, 10);
 	}
 
+	@Test(expected = IOException.class)
+	public void testCellLessException() throws IOException {
+		Reader source;
+		source = new FileReader(file);
+		CSVReader.readCSV(source, 2);
+	}
 
 }

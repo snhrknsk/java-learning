@@ -14,9 +14,8 @@ public class ScannerTokenizer {
 		try(Scanner in = new Scanner(source)){
 			in.useDelimiter(Pattern.compile(REGEX));
 			while(in.hasNext()) {
-				String line = in.next().replaceAll("^[\n\r]", "");
+				String line = in.next().replaceAll("^[\r\n]", "");
 				if (!line.equals("")) {
-//					System.out.println("in  :" + line);
 					result.add(line);
 				}
 			}
