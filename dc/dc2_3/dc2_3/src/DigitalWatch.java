@@ -6,6 +6,7 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GraphicsEnvironment;
 import java.awt.Menu;
 import java.awt.MenuItem;
 import java.awt.Point;
@@ -19,7 +20,9 @@ import java.awt.event.MouseMotionListener;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
 
 import javax.swing.JPanel;
 import javax.swing.JWindow;
@@ -29,7 +32,7 @@ public class DigitalWatch extends JWindow implements ActionListener {
 
 	enum MenuSet{
 		Exit,
-		Font, Dialog, 游ゴシック, メイリオ, 明朝体,
+		Font,
 		FontSize, Small, Medium, Large,
 		FontColor, FWhite, FBlack, FGray, FRed, FBlue, FGreen,
 		BackColor, BWhite, BBlack, BGray, BRed, BBlue, BGreen;
@@ -39,6 +42,9 @@ public class DigitalWatch extends JWindow implements ActionListener {
 	private  Point startDrag, startPos;
 	private PopupMenu pop = new PopupMenu();
 	private DigitalWatch watch;
+	private Font[] fonts;
+	private Set<String> fontSet = new HashSet<>();
+//	private Map<String, Font> fontMap = new HashMap<>();
 
 	public static void main(String[] args) {
 		new DigitalWatch().startWatch();
@@ -63,19 +69,19 @@ public class DigitalWatch extends JWindow implements ActionListener {
 
 	private void createMenu() {
 		//Font
+		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		fonts = ge.getAllFonts();
     	Menu fontMenu = new Menu(MenuSet.Font.name());
-    	MenuItem itemFont1 = new MenuItem(MenuSet.Dialog.name());
-    	itemFont1.addActionListener(watch);
-    	fontMenu.add(itemFont1);
-    	MenuItem itemFont2 = new MenuItem(MenuSet.メイリオ.name());
-    	itemFont2.addActionListener(watch);
-    	fontMenu.add(itemFont2);
-    	MenuItem itemFont3 = new MenuItem(MenuSet.明朝体.name());
-    	itemFont3.addActionListener(watch);
-    	fontMenu.add(itemFont3);
-    	MenuItem itemFont4 = new MenuItem(MenuSet.游ゴシック.name());
-    	itemFont4.addActionListener(watch);
-    	fontMenu.add(itemFont4);
+    	for (Font font : fonts) {
+    		if (fontSet.contains(font.getFontName())) {
+				continue;
+			}
+    		MenuItem itemFont = new MenuItem(font.getFontName());
+        	itemFont.addActionListener(watch);
+        	itemFont.setActionCommand(font.getFontName());
+        	fontMenu.add(itemFont);
+        	fontSet.add(font.getFontName());
+		}
     	pop.add(fontMenu);
 
     	//FontSize
@@ -208,18 +214,12 @@ public class DigitalWatch extends JWindow implements ActionListener {
         	backColor = Color.BLUE;
 		} else if (command.equals(MenuSet.BGreen.name())) {
         	backColor = Color.GREEN;
-		} else if (command.equals(MenuSet.Dialog.name())) {
-			fontName = MenuSet.Dialog.name();
-		} else if (command.equals(MenuSet.メイリオ.name())) {
-			fontName = MenuSet.メイリオ.name();
-		} else if (command.equals(MenuSet.明朝体.name())) {
-			fontName = MenuSet.明朝体.name();
-		} else if (command.equals(MenuSet.游ゴシック.name())) {
-			fontName = MenuSet.游ゴシック.name();
 		} else if (command.equals(MenuSet.Exit.name())) {
 			watch.dispose();
 			System.exit(0);
 			return;
+		} else if (fontSet.contains(command)) {
+			fontName = command;
 		}
 		setNewProperties(backColor, strColor, new Font(fontName, Font.BOLD, fontSize), dim);
 	}
