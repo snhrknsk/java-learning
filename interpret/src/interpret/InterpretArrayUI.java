@@ -228,7 +228,11 @@ public class InterpretArrayUI extends JFrame implements ActionListener{
 	private List<String> getTableParam(){
 		List<String> paramList = new ArrayList<>();
 		for (int i = 0; i < tableModel.getRowCount(); i++) {
-			paramList.add(tableModel.getValueAt(i, 2).toString());
+			if (tableModel.getValueAt(i, 2).toString().equals("")) {
+				paramList.add("null");
+			} else {
+				paramList.add(tableModel.getValueAt(i, 2).toString());
+			}
 		}
 		return paramList;
 	}

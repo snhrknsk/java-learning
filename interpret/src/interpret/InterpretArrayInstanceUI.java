@@ -237,9 +237,10 @@ public class InterpretArrayInstanceUI extends JFrame implements ActionListener {
 		} else if (command.equals(Action.ChangeObjectParam.name())) {
 			if (objectParamTableModel.getRowCount() > 0 && objectParameterTable.getCellEditor() != null) {
 				objectParameterTable.getCellEditor().stopCellEditing();
-			} else if (memberList.size() == 0) {
-				MessageDialog.createMessageDialog(this, "No field.");
 			}
+//			else if (memberList.size() == 0) {
+//				MessageDialog.createMessageDialog(this, "No field.");
+//			}
 			setUpdateFieldValue();
 		}
 	}

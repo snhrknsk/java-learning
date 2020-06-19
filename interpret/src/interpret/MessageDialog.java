@@ -6,6 +6,10 @@ import javax.swing.JOptionPane;
 public class MessageDialog {
 
 	public static void createExceptionDialog(JFrame owner, Exception e) {
+		if (e.getCause() != null) {
+			createExceptionDialog(owner, e.getCause().toString());
+			return;
+		}
 		JOptionPane.showMessageDialog(owner, e);
 		e.printStackTrace();
 	}
