@@ -4,9 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-/**
- * 分からない
- */
 public class MyProcess {
 
 	public static Process useProg(String cmd) throws IOException{
@@ -17,17 +14,37 @@ public class MyProcess {
 		return proc;
 	}
 
-	public static void plugTogether(Object src, Object dest) throws IOException {
-		if (src instanceof InputStream) {
+	public static void plugTogether(InputStream src, OutputStream dest) throws IOException {
+		new Thread(() -> {
 			int b;
-			while((b = ((InputStream) src).read()) != -1) {
-				((OutputStream)dest).write(b);
+			try {
+				while((b = src.read()) != -1) {
+					dest.write(b);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-		} else if (src instanceof OutputStream) {
+		}).start();
+	}
+
+	public static void plugTogether(OutputStream src, InputStream dest) throws IOException {
+		new Thread(() -> {
 			int b;
-			while((b = ((InputStream) dest).read()) != -1) {
-				((OutputStream)src).write(b);
+			try {
+				while((b = dest.read()) != -1) {
+					src.write(b);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
+		}).start();
+	}
+
+	public static void main(String[] args) {
+		try {
+			Process pro = useProg("ipconfig");
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 }

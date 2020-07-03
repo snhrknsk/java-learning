@@ -1,6 +1,5 @@
 package ch16.ex02;
 
-import java.io.PrintStream;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
@@ -18,8 +17,6 @@ public class TypeDesc {
 			}
 		}
 	}
-
-	private PrintStream out = System.out;
 
 	private static String[]
 			basic = { "class", "interface", "enum", "annotation" },
@@ -42,31 +39,31 @@ public class TypeDesc {
 		}
 
 		for (int i = 0; i < depth; i++) {
-			out.print("  ");
+			System.out.print("  ");
 		}
 		int kind = cls.isAnnotation() ? 3 :
 			cls.isEnum() ? 2 :
 			cls.isInterface() ? 1 :
 			0;
-		out.print(labels[kind] + " ");
-		out.print(cls.getCanonicalName());
+		System.out.print(labels[kind] + " ");
+		System.out.print(cls.getCanonicalName());
 
 		TypeVariable<?>[] params = cls.getTypeParameters();
 		if (params.length > 0) {
-			out.print("<");
+			System.out.print("<");
 			for (TypeVariable<?> param : params) {
-				out.print(param.getName());
-				out.print(", ");
+				System.out.print(param.getName());
+				System.out.print(", ");
 			}
-			out.println("\b\b>");
+			System.out.println("\b\b>");
 		} else {
-			out.println();
+			System.out.println();
 		}
 
 		//ネストしたクラスの表示
 		Class<?> nestedClass = cls.getDeclaringClass();
 		if (nestedClass != null) {
-			out.println("  nest in " + nestedClass.getCanonicalName());
+			System.out.println("  nest in " + nestedClass.getCanonicalName());
 		}
 
 		Type[] interfaces = cls.getGenericInterfaces();
