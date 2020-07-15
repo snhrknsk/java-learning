@@ -44,9 +44,7 @@ public class WatchPropertiesDialog extends JDialog implements ActionListener{
 	}
 
 	private enum WatchSize{
-		SMALL(34, 300,140),
-		MIDDLE(60,350,170),
-		LARGE(100,600,270);
+		SMALL(34, 300,140), MIDDLE(60,350,170), LARGE(100,600,270);
 		private int fontSize;
 		private int height;
 		private WatchSize(int size, int width, int height) {
@@ -70,12 +68,7 @@ public class WatchPropertiesDialog extends JDialog implements ActionListener{
 	}
 
 	private enum WatchColor{
-		BLACK(Color.BLACK),
-		GRAY(Color.GRAY),
-		WHITE(Color.WHITE),
-		GREEN(Color.GREEN),
-		BLUE(Color.BLUE),
-		RED(Color.RED),;
+		BLACK(Color.BLACK), GRAY(Color.GRAY), WHITE(Color.WHITE), GREEN(Color.GREEN), BLUE(Color.BLUE), RED(Color.RED),;
 		private Color color;
 		WatchColor(Color color){
 			this.color = color;
@@ -94,6 +87,7 @@ public class WatchPropertiesDialog extends JDialog implements ActionListener{
 	}
 
 	public WatchPropertiesDialog(DigitalWatch watch) {
+		super(watch, true);
 		this.watch = watch;
 		iniWatchProp = watch.getWatchProperties().getCurrentProperties();
 		newWatchProp = new WatchProperties(iniWatchProp);
@@ -181,6 +175,7 @@ public class WatchPropertiesDialog extends JDialog implements ActionListener{
 	    gbc.weightx = 10.0;
 	    gbc.weighty = 1.0;
 	    gbc.insets = insets;
+	    gbc.anchor = GridBagConstraints.WEST;
 		backColorSelector = new JComboBox<>();
 		backColorSelector.addActionListener(this);
 		createSelector(backColorSelector, WatchColor.values(), WatchColor.getWatchColor(iniWatchProp.getBackColor()));
@@ -389,8 +384,10 @@ public class WatchPropertiesDialog extends JDialog implements ActionListener{
 		return width;
 	}
 
+    /**
+     * カラーチップを表示する
+     */
     class MyCellRenderer extends JLabel implements ListCellRenderer<WatchColor>{
-
 		MyCellRenderer(){
 		  setOpaque(true);
 		}
