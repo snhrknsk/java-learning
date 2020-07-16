@@ -52,6 +52,7 @@ public class WatchAlarmConfig {
 	}
 
 	public void deleteAlarm(String identifier) {
+		setAlarmEnable(false, identifier);
 		dataMap.remove(identifier);
 	}
 
@@ -109,13 +110,12 @@ public class WatchAlarmConfig {
 		timer.scheduleAtFixedRate(new TimerTask() {
 			@Override
 			public void run() {
+				//java fx使えるのであればmp3も再生できるこちらを使う
 //				AudioClip c = new AudioClip(new File(data.getSoundFilePath()).toURI().toString());
 //				c.play();
 //				//永遠になり続けてしまう・・・
 //				JOptionPane.showMessageDialog(GlobalConfig.getOwnerFrame(), "アラームを止める", "アラーム", JOptionPane.ERROR_MESSAGE);
 //				c.stop();
-
-
 				try (AudioInputStream audioInputStream  = AudioSystem.getAudioInputStream(new File(data.getSoundFilePath()))){
 					try(Clip clip = AudioSystem.getClip()){
 				        clip.open(audioInputStream);

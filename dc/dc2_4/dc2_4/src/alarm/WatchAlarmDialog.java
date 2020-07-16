@@ -4,6 +4,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -16,10 +17,15 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import javax.swing.table.DefaultTableModel;
 
 import dc2_4.src.DigitalWatch;
@@ -149,6 +155,44 @@ public class WatchAlarmDialog extends JDialog implements ActionListener{
 	    tablePanel.add(Box.createRigidArea(new Dimension(5,1)));
 		tablePanel.add(scrollPanel);
 		tablePanel.add(Box.createRigidArea(new Dimension(5,1)));
+
+		JPopupMenu tableMenu = new JPopupMenu();
+		JMenuItem menuItem = new JMenuItem("Delete");
+		menuItem.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int index = alarmTable.getSelectedRow();
+				if (index != -1) {
+					String identifier = (String)alarmTableModel.getValueAt(index, 1);
+					config.deleteAlarm(identifier);
+					alarmTableModel.removeRow(index);
+				}
+			}
+		});
+		//右クリックで対象行を選択
+		tableMenu.addPopupMenuListener(new PopupMenuListener() {
+			@Override
+			public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+				SwingUtilities.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						int rowPoint = alarmTable.rowAtPoint(SwingUtilities.convertPoint(tableMenu, new Point(0, 0), alarmTable));
+						if (rowPoint > -1) {
+							alarmTable.setRowSelectionInterval(rowPoint, rowPoint);
+						}
+					}
+				});
+			}
+			@Override
+			public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+			}
+			@Override
+			public void popupMenuCanceled(PopupMenuEvent e) {
+			}
+		});
+		tableMenu.add(menuItem);
+		alarmTable.setComponentPopupMenu(tableMenu);
+
 		panel.add(tablePanel);
 
 		JPanel endButtonPanel = new JPanel();
