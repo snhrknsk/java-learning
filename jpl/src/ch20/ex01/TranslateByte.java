@@ -1,7 +1,5 @@
 package ch20.ex01;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -15,11 +13,4 @@ public class TranslateByte {
 		}
 	}
 
-	public static void main(String[] args) throws IOException {
-		byte[] buf = "test inputstream".getBytes();
-		ByteArrayInputStream inputStream = new ByteArrayInputStream(buf);
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		new TranslateByte().translateByte((byte) 't', (byte) 'T', inputStream, outputStream);
-		System.out.println(outputStream.toString());
-	}
 }
