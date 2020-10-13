@@ -10,8 +10,8 @@ import org.junit.jupiter.api.Test;
 
 class StreamSpeedTest {
 
-	private static String path = "./test/ch02/ex03/War and Pearce.txt";// "./War and Pearce.txt";
-	// "./test/ch02/ex03/War and Pearce.txt" //Eclipse上でのテスト実行パス
+	private static String path = "./test/ch02/ex03/LongText.txt";// "./LongText.txt";
+	// "./test/ch02/ex03/LongText.txt" //Eclipse上でのテスト実行パス
 
 	@Test
 	void test() {
