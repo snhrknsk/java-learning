@@ -13,7 +13,7 @@ public interface Collection2<T> extends Collection<T> {
 	}
 
 	public static void main() {
-		// 指定した文字数のみを表示する
+		// 指定した文字数の文字のみを表示する
 		String[] names = {"Hoge", "Foo", "Bar", "Test"};
 		Collection2<String> col = new ArrayList2<>();
 		Collections.addAll(col, names);

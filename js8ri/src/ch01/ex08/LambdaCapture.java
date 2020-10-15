@@ -14,11 +14,13 @@ public class LambdaCapture {
 		}
 		runners.stream().forEach(Runnable::run);
 
-		/*
-		//不可：iはfinalではないのでエラー, 添字をj = i;のようにloop内で定義すれば可能
+		// 変数iはfinalではないのでnames[i]とするとエラー
+		// nameをaddの前に別変数へ代入しておく必要がある(もしくはj = iなどインデックスを別変数へ代入)
+		List<Runnable> runners2 = new ArrayList<>();
 		for (int i = 0; i < names.length; i++) {
-			runners.add(()->System.out.println(names[i]));
+			String name = names[i];
+			runners2.add(()->System.out.println(name));
 		}
-		*/
+		runners2.stream().forEach(Runnable::run);
 	}
 }
