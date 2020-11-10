@@ -17,7 +17,7 @@ public class UncheckExceptionRunnable {
 		new Thread(unckeck(()->{
 			System.out.println("Zzz");
 			Thread.sleep(1000);
-			return null;
+			return ;
 		})).start();
 
 	}

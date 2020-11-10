@@ -1,0 +1,10 @@
+Java1.4では遅延処理を行うことができなかったため毎回assertの条件チェックが行われる
+予約語として登録し、実行時引数によってコードを実行するかしないかを決定することでパフォーマンスに影響を出さずにassertを実現
+
+Java8以降であれば遅延処理を行うことできるので予約語とせずともパフォーマンスに影響無くライブラリとして実装可能
+private final static boolean isDebug = java.lang.management.ManagementFactory.getRuntimeMXBean().getInputArguments().toString().contains("-agentlib:jdwp");
+public static void assertion(BooleanSupplier condition, String message) throws RuntimeException {
+	if ( isDebug && condition.getAsBoolean()) {
+		throw new RuntimeException(message);
+	}
+}

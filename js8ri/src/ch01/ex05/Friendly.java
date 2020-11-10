@@ -47,7 +47,7 @@ public class Friendly {
 		},"Thread2").start();
 		*/
 		//12行→2行
-		new Thread(() -> jareth.hug(), "Thread1").start();
+		new Thread(jareth::hug, "Thread1").start();
 		new Thread(() -> cory.hug(), "Thread2").start();
 	}
 }

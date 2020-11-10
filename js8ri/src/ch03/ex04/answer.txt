@@ -1,0 +1,6 @@
+
+@FunctionalInterfaceアノテーションが付いているメソッド
+java.io.FileFilter
+java.io.FilenameFilter
+java.nio.file.DirectoryStream.Filter<T>
+java.util.logging.Filter
