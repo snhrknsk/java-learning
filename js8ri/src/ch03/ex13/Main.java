@@ -25,15 +25,13 @@ public class Main extends Application {
 		Image img = new Image( new File("./src/ch03/ex13/queen-mary.png").toURI().toString() );
 
 		ColorTransform blurTransform = (x, y, image) -> {
-			int width = (int)img.getWidth();
-			int height = (int)img.getHeight();
 			int pixels = 9;
 			double red = 0;
 			double green = 0;
 			double blue = 0;
 			for (int i = 0; i < 3; i++) {
 				for (int j = 0; j < 3; j++) {
-					Color c = getColor(image, x + i - 1, y + j - 1, width, height);
+					Color c = image.getColor(x + i - 1, y + j - 1);
 					if (c != null) {
 						red += c.getRed();
 						green += c.getGreen();
@@ -45,31 +43,29 @@ public class Main extends Application {
 		};
 
 		ColorTransform edgeDetectTransform = (x, y, image) -> {
-			int width = (int)img.getWidth();
-			int height = (int)img.getHeight();
-			int pixels = 4;
 			List<Color> colors = new ArrayList<>();
-			colors.add(getColor(image, x, y + 1, width, height)); // N
-			colors.add( getColor(image, x + 1, y, width, height)); // E
-			colors.add(getColor(image, x, y - 1, width, height)); // S
-			colors.add(getColor(image, x - 1, y, width, height)); // W
+
+			colors.add(image.getColor(x, y + 1)); // N
+			colors.add(image.getColor(x + 1, y)); // E
+			colors.add(image.getColor(x, y - 1)); // S
+			colors.add(image.getColor(x - 1, y)); // W
 			Color color = image.getColor(x, y);
 
-			double red = 0.0;
-			double green = 0.0;
-			double blue = 0.0;
+			double red = colors.size() * color.getRed();
+			double green = colors.size() * color.getGreen();
+			double blue = colors.size() * color.getBlue();
 			for (Color c : colors) {
 				if (c == null) {
 					continue;
 				}
-				red += c.getRed();
-				green += c.getGreen();
-				blue += c.getBlue();
+				red -= c.getRed();
+				green -= c.getGreen();
+				blue -= c.getBlue();
 			}
 			return Color.color(
-					color.getRed() * pixels - red < 0 ? 0.0 : color.getRed() > 1.0 ? 1.0 : color.getRed(),
-					color.getGreen() * pixels - green < 0 ? 0.0 : color.getGreen() > 1.0 ? 1.0 : color.getGreen(),
-					color.getBlue() * pixels - blue < 0 ? 0.0 : color.getBlue() > 1.0 ? 1.0 : color.getBlue()
+					red < 0 ? 0.0 : red > 1.0 ? 1.0 : red,
+					green < 0 ? 0.0 : green > 1.0 ? 1.0 : green,
+					blue < 0 ? 0.0 : blue > 1.0 ? 1.0 : blue
 				);
 		};
 
@@ -83,15 +79,5 @@ public class Main extends Application {
 	    System.exit(0);
 
 	}
-
-    private static Color getColor(LatentImage image, int x, int y, int width, int height) {
-    	if (x < 0 || width <= x) {
-    		return null;
-    	}
-    	if (y < 0 || height <= y) {
-    		return null;
-    	}
-    	return image.getColor(x, y);
-    }
 
 }

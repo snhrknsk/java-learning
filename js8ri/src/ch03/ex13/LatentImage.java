@@ -9,7 +9,6 @@ import javafx.scene.paint.Color;
 
 public class LatentImage {
 
-	private final Image in;
 	private final int width;
 	private final int height;
 	private WritableImage out;
@@ -17,11 +16,9 @@ public class LatentImage {
 	private List<ColorTransform> pendingOperations = new ArrayList<>();
 
 	private LatentImage(Image in) {
-		this.in = in;
 		bufferImage = in;
 		width = (int)in.getWidth();
 		height = (int)in.getHeight();
-		out = new WritableImage(width, height);
 	}
 
 	public static LatentImage from(Image in) {
@@ -30,10 +27,11 @@ public class LatentImage {
 
 	public Image toImage() {
 		if (pendingOperations.size() == 0) {
-			return in;
+			return bufferImage;
 		}
 		// ColorTransformに対する結果を途中結果としてbufferImageへ格納しすべての前のTransformを終了させる
 		for (ColorTransform f : pendingOperations) {
+			out = new WritableImage(width, height);
 			for (int x = 0; x < width; x++) {
 				for (int y = 0; y < height; y++) {
 					Color c = bufferImage.getPixelReader().getColor(x, y);
