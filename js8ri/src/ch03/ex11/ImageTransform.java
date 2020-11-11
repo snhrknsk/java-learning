@@ -38,7 +38,7 @@ public class ImageTransform extends Application {
 	}
 
 	@Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage primaryStage) throws Exception {
 		System.out.println("Current Directory" + System.getProperty("user.dir"));
 		Image img = new Image( new File("./src/ch03/ex11/queen-mary.png").toURI().toString() );
 		int frame = 10;

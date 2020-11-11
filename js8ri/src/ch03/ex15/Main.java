@@ -13,7 +13,7 @@ import javafx.stage.Stage;
 public class Main extends Application {
 
 	@Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage primaryStage) throws Exception {
 		System.out.println("Current Directory" + System.getProperty("user.dir"));
 		Image img = new Image( new File("./src/ch03/ex15/queen-mary.png").toURI().toString() );
 		Image result = LatentParallelImage.from(img).transform(Color::brighter).transform(Color::brighter).toImage();
