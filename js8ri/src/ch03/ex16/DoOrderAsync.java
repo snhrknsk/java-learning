@@ -9,15 +9,17 @@ public class DoOrderAsync {
 	public static <T> void doInOrderAsync(Supplier<T> first, BiConsumer<T, Throwable> second, Consumer<Throwable> handler) {
 		Thread t = new Thread() {
 			public void run() {
+				T result = null;
+				Throwable throwable = null;
 				try {
-					T result = first.get();
-					second.accept(result, null);
+					result = first.get();
 				} catch (Throwable e) {
+					throwable = e;
+				}finally {
 					try {
-						second.accept(null, e);
+						second.accept(result, throwable);
 					}catch (Throwable t) {
-						// BiConsumerで処理できるのでhandler不要？
-						handler.accept(e);
+						handler.accept(t);
 					}
 				}
 			}
