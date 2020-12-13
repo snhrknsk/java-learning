@@ -43,6 +43,7 @@ public class Main extends Application {
 		};
 
 		ColorTransform edgeDetectTransform = (x, y, image) -> {
+
 			List<Color> colors = new ArrayList<>();
 
 			colors.add(image.getColor(x, y + 1)); // N

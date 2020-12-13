@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 class StreamSpeedTest {
 
-	private static String path = "./LongText.txt";
+	private static String path = "./test/ch02/ex03/LongText.txtk";
 	// "./test/ch02/ex03/LongText.txt" //Eclipse上でのテスト実行パス
 
 	@Test

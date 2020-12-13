@@ -6,7 +6,7 @@ import java.util.function.Supplier;
 
 public class DoOrderAsync {
 
-	public static <T> void doInOrderAsync(Supplier<T> first, BiConsumer<T, Throwable> second, Consumer<Throwable> handler) {
+	public static <T> void doInOrderAsync(Supplier<? extends T> first, BiConsumer<? super T, Throwable> second, Consumer<Throwable> handler) {
 		Thread t = new Thread() {
 			public void run() {
 				T result = null;

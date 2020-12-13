@@ -34,8 +34,7 @@ public class LatentImage {
 			out = new WritableImage(width, height);
 			for (int x = 0; x < width; x++) {
 				for (int y = 0; y < height; y++) {
-					Color c = bufferImage.getPixelReader().getColor(x, y);
-					c = f.apply(x, y, this);
+					Color c = f.apply(x, y, this);
 					out.getPixelWriter().setColor(x, y, c);
 				}
 			}
