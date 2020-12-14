@@ -43,7 +43,7 @@ public class DigitalWatch extends Application{
 	private final int UPDATE_INTERVAL = 1000;
 	private List<MenuItem> fontMenuItemList = new ArrayList<>();
 
-	public enum FontSize{
+	private enum FontSize{
 		SMALL(34, 240, 50), MIDDLE(60, 350, 90), LARGE(100, 600, 150),XLARGE(250, 1300, 400);
 		private int width;
 		private int height;
@@ -106,7 +106,7 @@ public class DigitalWatch extends Application{
 	public void start(Stage stage) {
 		this.stage = stage;
 		initialize();
-		createComponent(stage);
+		createTimerComponent(stage);
 		startWatch();
 		stage.show();
 	}
@@ -153,10 +153,9 @@ public class DigitalWatch extends Application{
 
 	}
 
-	private void createComponent(Stage stage) {
+	private void createTimerComponent(Stage stage) {
 
 		root = new VBox(2.0);
-
 		panel = new GridPane();
 		panel.setAlignment(Pos.BOTTOM_CENTER);
 
@@ -165,9 +164,7 @@ public class DigitalWatch extends Application{
 		timeLabel.setTextFill(property.getFontColor());
 		panel.add(timeLabel, 0, 0);
 		root.getChildren().add(panel);
-
 		root.setBackground(new Background(new BackgroundFill(property.getBackColor(), CornerRadii.EMPTY, Insets.EMPTY)));
-
 		scene = new Scene(root, computeTextWidth(Font.font(property.getFont(), FontWeight.BOLD, property.getFontSize()), FORMAT.format(time.getTime()), Integer.MAX_VALUE) * 1.3, Font.font(property.getFont(), FontWeight.BOLD, property.getFontSize()).getSize() * 1.3);
 		stage.setScene(scene);
 		//マウス・ボタンが押されたとき
@@ -205,31 +202,29 @@ public class DigitalWatch extends Application{
 
 	private void updateFont(String font) {
 		property.setFont(font);
-		createComponent(stage);
+		createTimerComponent(stage);
 	}
 
 	private void updateFontSize(FontSize fontSize) {
 		property.setFontSize(fontSize.getFontSize());
 		property.setSize(new Dimension2D(fontSize.getWidth(), fontSize.getHeight()));
-		createComponent(stage);
+		createTimerComponent(stage);
 	}
 
 	private void updateFontColor(Color c) {
 		property.setFontColor(c);
-		createComponent(stage);
+		createTimerComponent(stage);
 	}
 
 	private void updateBackColor(Color c) {
 		property.setBackColor(c);
-		createComponent(stage);
+		createTimerComponent(stage);
 	}
 
 	private double computeTextWidth(Font font, String text, double wrappingWidth) {
 		Text helper = new Text();
 		helper.setFont(font);
 		helper.setText(text);
-		// Note that the wrapping width needs to be set to zero before
-		// getting the text"s real preferred width.
 		helper.setWrappingWidth(0);
 		helper.setLineSpacing(0);
 		double w = Math.min(helper.prefWidth(-1), wrappingWidth);
