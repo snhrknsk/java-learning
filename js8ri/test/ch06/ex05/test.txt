@@ -1,0 +1,2 @@
+Alice text includes beginning
+This is compared with alice text.
