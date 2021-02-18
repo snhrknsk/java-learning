@@ -35,6 +35,7 @@ public class RepeatAuth {
 			password = scan.nextLine();
 			return new PasswordAuthentication(username, password.toCharArray());
 		};
+
 		Predicate<PasswordAuthentication> until = passAuth -> {
 			return Arrays.equals(passAuth.getPassword(), pass);
 		};

@@ -23,7 +23,7 @@ public class FlightTime {
 	private static final ZoneId destinationZone = ZoneId.of("Europe/Berlin");
 
 	public static void main(String[] args) {
-		LocalDateTime time = destTime(LocalDateTime.of(2020, 12, 18, 0, 0), departureZone, destinationZone, 3, 50);
+		LocalDateTime time = destTime(LocalDateTime.of(2020, 12, 18, 3, 5), departureZone, destinationZone, 10, 50);
 		System.out.println(time);
 	}
 }
