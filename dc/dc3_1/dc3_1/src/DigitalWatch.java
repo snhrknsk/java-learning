@@ -28,6 +28,7 @@ public class DigitalWatch extends Application{
 	//Component
 	private Label timeLabel;
 
+
     @Override
     public void start(Stage stage) {
 
