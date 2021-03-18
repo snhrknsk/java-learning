@@ -1,20 +1,16 @@
 package dc3_4.src;
 
-import com.sun.javafx.geom.Dimension2D;
-
+import javafx.geometry.Dimension2D;
 import javafx.scene.paint.Color;
 
 public class Settings {
 
 	private String font;
 	private int fontSize;
-	public int getFontSize() {
-		return fontSize;
-	}
-
 	private Dimension2D size;
 	private Color fontColor;
 	private Color backColor;
+	private Dimension2D position;
 
 	public Settings(String font, int fontSize, Dimension2D size, Color fontColor, Color backColor) {
 		this.font = font;
@@ -38,5 +34,17 @@ public class Settings {
 
 	public Color getBackColor() {
 		return backColor;
+	}
+
+	public int getFontSize() {
+		return fontSize;
+	}
+
+	public Dimension2D getPosition() {
+		return position;
+	}
+
+	public void setPosition(Dimension2D position) {
+		this.position = position;
 	}
 }

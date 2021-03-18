@@ -3,9 +3,8 @@ package dc3_4.src;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
-import com.sun.javafx.geom.Dimension2D;
-
 import javafx.embed.swing.SwingFXUtils;
+import javafx.geometry.Dimension2D;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
