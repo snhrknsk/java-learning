@@ -55,4 +55,5 @@ public class ScanUtil {
 		Spliterator<T> spliterator = Spliterators.spliteratorUnknownSize(iterator, Spliterator.ORDERED);
 		return StreamSupport.stream(spliterator, false);
 	}
+
 }

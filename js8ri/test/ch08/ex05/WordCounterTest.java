@@ -22,11 +22,11 @@ class WordCounterTest {
 			ArrayList<String> words = new ArrayList<String>(Arrays.asList(src.split("[\\P{L}]+")));
 
 			long start = System.currentTimeMillis();
-			WordCounter.wordCount(words);
+			WordCounter.wordCountCh02(words);
 			System.out.println("Not Stream: " + (System.currentTimeMillis() - start));
 
 			start = System.currentTimeMillis();
-			WordCounter.wordCountCh02(words);
+			WordCounter.wordCount(words);
 			System.out.println("Stream: " + (System.currentTimeMillis() - start));
 
 		} catch (IOException e) {

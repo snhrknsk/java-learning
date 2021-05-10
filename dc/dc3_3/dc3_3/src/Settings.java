@@ -1,7 +1,6 @@
 package dc3_3.src;
 
-import com.sun.javafx.geom.Dimension2D;
-
+import javafx.geometry.Dimension2D;
 import javafx.scene.paint.Color;
 
 public class Settings {

@@ -11,7 +11,7 @@ import javafx.stage.Stage;
 public class ConfigUtil {
 
 	private static final String FILE_SEPARATOR = System.getProperty("file.separator");
-	private static final String BASE_PATH = System.getProperty("user.dir") + FILE_SEPARATOR + "dc3_4" + FILE_SEPARATOR;
+	private static final String BASE_PATH = System.getProperty("user.dir") + FILE_SEPARATOR;// + "dc3_4" + FILE_SEPARATOR;
 	public static final String ICON_PATH = "file:///" + BASE_PATH + "configuration" + FILE_SEPARATOR + "icon.png";
 
 	public static class PrefConfig {

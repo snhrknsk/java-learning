@@ -41,8 +41,8 @@ public class UnsignedCalc {
 		System.out.println("unsigned: " + add(v1, v2));
 
 		System.out.println("減算");
-		System.out.println("int\t\t: " + (v1 - v2));
-		System.out.println("unsigned: " + sub(v1, v2));
+		System.out.println("int\t\t: " + (v2 - v1));
+		System.out.println("unsigned: " + sub(v2, v1));
 
 		v1 = -1;
 		System.out.println("除算");
@@ -59,5 +59,6 @@ public class UnsignedCalc {
 		System.out.println("unsigned < : " + compare(1, 10));
 		System.out.println("unsigned > : " + compare(10, 1));
 		System.out.println("unsigned = : " + compare(1, 1));
+
 	}
 }

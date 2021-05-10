@@ -71,6 +71,8 @@ public class DigitalWatch extends Application{
 	private void initialize() {
 		stage.setTitle("Digital Watch");
 		try {
+			System.out.println(System.getProperty("user.dir"));
+			System.out.println(ConfigUtil.ICON_PATH);
 			stage.getIcons().add(new Image(ConfigUtil.ICON_PATH));
 		} catch (Exception e) {
 			System.out.println(ConfigUtil.ICON_PATH);
